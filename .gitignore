@@ -1,0 +1,16 @@
+#Entorno virtual
+venv/
+
+#Archivos de Python
+__pycache__/
+*.pyc
+
+#Imágenes de prueba
+Test_Images/
+
+#Variables sensibles
+.env
+
+#Archivos del sistema (En mi venv no estan)
+.DS_Store
+Thumbs.db

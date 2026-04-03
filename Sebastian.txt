@@ -1,1 +1,8 @@
 Probando
+
+SEBAS para que te funcione todo correcto tienes que ejecutar estos comandos
+
+1. python -m venv venv
+ venv\Scripts\activate
+
+2. pip install -r requirements.txt
