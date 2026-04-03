@@ -1,8 +1,19 @@
 Probando
 
-SEBAS para que te funcione todo correcto tienes que ejecutar estos comandos
+SEBAS para que te funcione todo correcto tienes que ejecutar estos comandos (Despues de copiar el repositorio/hacer un pull depende tambien no hace falta hacerlo varias veces)
 
 1. python -m venv venv
  venv\Scripts\activate
 
-2. pip install -r requirements.txt
+2. pip install -r requirements.
+
+Cosas que tienes que hacer por ahora: 
+
+1. Mira si se te ocurre algún nombre para el programa (ten en cuenta de que vamos a poder cifrar mensajes en más formatos o al menos es lo que tenemos pensado)
+
+2. Mira si puedes mejorar la manera de la que se ve la interfaz de la web (css y html)
+
+3. Revisa el codigo, leete los comentarios y etc.
+
+4. Montate todo el entorno (Recuerda hacer pull de vez en cuando)
+

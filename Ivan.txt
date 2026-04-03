@@ -1,1 +1,18 @@
+03/04/2026
+
+Creado la estructura del proyecto, con pip install flask pillow y freeze en el archivo requirements.
+
+stego.py >>>> Importadas las librerias que necesitamos
+
+stego.py >>>> añadida la función de encifrar la contraseña introducida por el usuario
+
+stego.py >>>> añadida la función de esconder mensaje en la imagen
+
+static - stylesheet.css básico, quedan cosas
+
+templates - index.html básico, quedan bastantes cosas por hacer
+
+main.py - Solo es para probar, es probable que al final tengamos dos interfaces pero tendremos que verlo.
+
+app.py - servidor local flask montado, para poder tener una interfaz web en formato html, es posible
 
