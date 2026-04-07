@@ -7,7 +7,7 @@ __pycache__/
 
 #Imágenes de prueba
 Test_Images/
-uploads
+uploads/
 
 #Variables sensibles
 .env
@@ -15,3 +15,4 @@ uploads
 #Archivos del sistema (En mi venv no estan)
 .DS_Store
 Thumbs.db
+
