@@ -6,7 +6,6 @@ import os #Permitira meternos en el sistema de archivos para sacar las imagenes
 
 from stego import hide_message, extract_message
 
-
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 UPLOAD_FOLDER = "uploads" #Dice el nombre de la carpeta en la que se guadaran las imagenes
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
@@ -41,15 +40,15 @@ def extraer():
     imagen = request.files["imagen"] #Recibe la imagen que tiene el mensaje oculto
     password = request.form["password"] #Recibe la contraseña del usuario
 
-    path = os.path.join(UPLOAD_FOLDER, imagen.filename) #Guarda temporalmene la imágen
+    path = os.path.join(UPLOAD_FOLDER, imagen.filename) #Guarda la imágen
     imagen.save(path) #Guarda el archivo en el disco para que se pueda leer pixel por pixel
 
     try: #Control de errores para ver si la contraseña o la imagen son correctas
         message = extract_message(path, password)
     except:
-        message = "Error: contraseña incorrecta o imagen inválida"
+        message = "Error: contraseña incorrecta o imágen sin mensaje"
 
     return render_template("index.html", mensaje_extraido=message)
 
 if __name__ == "__main__": #Comprueba si el archivo se ejecuta directamente
-    app.run(debug=True) #Lanza el servidor
+    app.run(debug=True, port=5000) #Lanza el servidor (En el puerto 5000 especificamente por ahora)

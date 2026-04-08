@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Esteganografía</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
 
-<h1>Titulo de Programa</h1>
+    <head>
+        <meta charset="UTF-8">
+        <title>Esteganografía</title>
+        <link rel="stylesheet" href="/static/stylesheet.css">
+        <script src="/JS/JS_misc.js"></script>
+    </head>
 
-<h2>Ocultar mensaje</h2>
-<form action="/hide" method="post" enctype="multipart/form-data">
-    <input type="file" name="imagen" required><br><br>
-    <textarea name="mensaje" placeholder="Mensaje"></textarea><br><br>
-    <input type="password" name="password" placeholder="Contraseña"><br><br>
-    <button type="submit">Ocultar</button>
-</form>
+    <body>
 
-<hr>
+        <h1>Titulo de Programa</h1>
 
-<h2>Extraer mensaje</h2>
-<form action="/extract" method="post" enctype="multipart/form-data">
-    <input type="file" name="imagen" required><br><br>
-    <input type="password" name="password" placeholder="Contraseña"><br><br>
-    <button type="submit">Extraer</button>
-</form>
+        <h2>Ocultar mensaje</h2>
+            <form action="/hide" method="post" enctype="multipart/form-data">
+                <input type="file" name="imagen" required><br><br>
+                <textarea name="mensaje" placeholder="Mensaje"></textarea><br><br>
+                <input type="password" name="password" placeholder="Contraseña"><br><br>
+                <button type="submit">Ocultar</button>
+        </form>
 
-{% if mensaje_extraido %}
-<h3>Mensaje Extraido:</h3>
-<p>{{ mensaje_extraido }}</p>
-{% endif %}
+        <hr>
 
-</body>
+        <h2>Extraer mensaje</h2>
+            <form action="/extract" method="post" enctype="multipart/form-data">
+                <input type="file" name="imagen" required><br><br>
+                <input type="password" name="password" placeholder="Contraseña"><br><br>
+                <button type="submit">Extraer</button>
+            </form>
+
+
+            {% if mensaje_extraido %} 
+            <h3>Mensaje Extraido:</h3> <!--Aquí se utiliza Jinja2 para pasarle la variable al html SOLAMENTE si esta no esta vacia, o sea, si el mensaje se ha extraido de verdad-->
+            <p>{{ mensaje_extraido }}</p>
+            {% endif %}
+
+    </body>
+
 </html>

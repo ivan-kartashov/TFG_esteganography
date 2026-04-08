@@ -16,3 +16,13 @@ main.py - Solo es para probar, es probable que al final tengamos dos interfaces 
 
 app.py - servidor local flask montado, para poder tener una interfaz web en formato html, es posible
 
+08/04/2026
+
+- Añadido port=5000 para estar seguro que siempre se ejecutara en el puerto 5000
+
+- Añadida una carpeta para los archivos javascript por si lo necesitamos
+
+- index.html le he formateado y he añadido un comentario por si las moscas. Además le metí que siempre tuviese
+el charset utf-8 para tener una amplia variedad de carácteres, añadi el link al archivo de javascript (esta vacio)
+además de arreglar el link a la stylesheet.css.
+
