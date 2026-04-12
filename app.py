@@ -19,8 +19,11 @@ def index():
 
 @app.route("/hide", methods=["POST"]) #Define una dirección nueva "/hide"
 def hide():
-    #Las siguientes tres lineas le piden al usuario que seleccione una imagen y introduzca los demás campos
-    image = request.files["imagen"]
+
+    image = request.files["imagen"] #Aqui le pediremos al usuario que le meta la imagen 
+
+    #A continuación le pediremos al usuario que introduzca los demás campos
+
     message = request.form["mensaje"]
     password = request.form["password"]
 
@@ -34,8 +37,26 @@ def hide():
 
     return send_file(output, as_attachment=True)
 
+@app.route("/lengthofmessage", methods=["POST"])
+def lengthofmessage():
 
-@app.route("/extract", methods=["POST"]) #Lo mismo que lo anterior pero ahora con la funcionalidad de extraer el mensaje oculto
+    #Las siguientes tres lineas le piden al usuario que seleccione una imagen y a continuación calcularemos su capacidad
+    img = request.files["imagen"]
+
+    path = os.path.join(UPLOAD_FOLDER, img.filename)
+    img.save(path)
+
+    from PIL import Image
+    img = Image.open(path)
+    width, height = img.size
+
+    capacidad_bits = width * height * 3 #Esta es la formula que tengo explicada en el .txt
+    max_chars = (capacidad_bits - 16) // 8 #Esto es la formula de capacidad final, también explicada en el .txt bajo el nombre "Ivan"
+
+    return str(max_chars)
+
+#Esta ruta de nuestra app permitira extraer los mensajes ocultos que se escondieron en las imagenes (Creo que si son solo mediante esta aplicación)
+@app.route("/extract", methods=["POST"]) 
 def extraer():
     imagen = request.files["imagen"] #Recibe la imagen que tiene el mensaje oculto
     password = request.form["password"] #Recibe la contraseña del usuario
@@ -43,12 +64,17 @@ def extraer():
     path = os.path.join(UPLOAD_FOLDER, imagen.filename) #Guarda la imágen
     imagen.save(path) #Guarda el archivo en el disco para que se pueda leer pixel por pixel
 
-    try: #Control de errores para ver si la contraseña o la imagen son correctas
+#Control de errores para ver si la contraseña o la imagen son correctas
+    try: 
         message = extract_message(path, password)
     except:
-        message = "Error: contraseña incorrecta o imágen sin mensaje"
+        message = "Error: contraseña incorrecta/Imagen Sin mensaje"
 
     return render_template("index.html", mensaje_extraido=message)
 
-if __name__ == "__main__": #Comprueba si el archivo se ejecuta directamente
-    app.run(debug=True, port=5000) #Lanza el servidor (En el puerto 5000 especificamente por ahora)
+
+#Comprueba si el archivo se ejecuta directamente
+if __name__ == "__main__": 
+
+    #Lanza el servidor (En el puerto 5000 especificamente por ahora)
+    app.run(debug=True, port=5000) 

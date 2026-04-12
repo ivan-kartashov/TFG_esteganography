@@ -26,3 +26,16 @@ app.py - servidor local flask montado, para poder tener una interfaz web en form
 el charset utf-8 para tener una amplia variedad de carácteres, añadi el link al archivo de javascript (esta vacio)
 además de arreglar el link a la stylesheet.css.
 
+12/04/2026
+
+Limite de caracteres por imagen a esconder - Como nuestro programa cuarda un bit por canal RGB (3 bits por píxel),
+entonces la capacidad de bits será de ancho por alto multiplicado por 3. Pero como tenemos un delimitador al final
+para indicar cuando se acaba la secuencia, le tendremos que restar 16 bits.
+
+lengthofmessage - nueva ruta de nuestra aplicación. Nos permitira ver cuantos carácteres posibles tenemos en la
+imágen en la que pretendemos escribir, lo que sucede es que también implemente un contador para que vaya disminuyendo
+el número de carácteres posibles según vayamos escribiendo. He tenido que usar JS básico que vi en un tutorial, modificar index.html y app.py para añadir nueva ruta a la app.
+
+Nota importante que vi al probarlo: Meter muchisimos caracteres suele empeorar la calidad y inflar su tamaño ayyyy.
+
+Añadidas cosas que hacer para Sebas.

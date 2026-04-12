@@ -5,7 +5,6 @@
         <meta charset="UTF-8">
         <title>Esteganografía</title>
         <link rel="stylesheet" href="/static/stylesheet.css">
-        <script src="/JS/JS_misc.js"></script>
     </head>
 
     <body>
@@ -13,10 +12,13 @@
         <h1>Titulo de Programa</h1>
 
         <h2>Ocultar mensaje</h2>
-            <form action="/hide" method="post" enctype="multipart/form-data">
-                <input type="file" name="imagen" required><br><br>
-                <textarea name="mensaje" placeholder="Mensaje"></textarea><br><br>
-                <input type="password" name="password" placeholder="Contraseña"><br><br>
+            <form action="/hide" method="post" enctype="multipart/form-data"> <!--Para sebas, eñ action indicira que ruta de aplicación llamamos, acción que será post ya que el usuario envia la imágen, mensaje y contraseña hacia nuestra aplicación y luego el enctype permite que el usuario envie imágenes-->
+                <input type="file" name="imagen" id="imagenInput" required>                
+                <p id="TextCapacity"></p> <!--En este caso le pasaremos al usuario la variable max_chars desde el JS-->
+                <textarea name="mensaje" id="mensajeInput" placeholder="Mensaje"></textarea>
+                <p id="TextRemaining"></p>
+                <br><br>
+                <input type="password" name="password" placeholder="Contraseña (nada para no tener contraseña)"><br><br>
                 <button type="submit">Ocultar</button>
         </form>
 
@@ -37,4 +39,7 @@
 
     </body>
 
+    <script src="/static/JS/JS_messageinfo.js">
+
+    </script>
 </html>
