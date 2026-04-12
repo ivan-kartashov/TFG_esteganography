@@ -3,3 +3,14 @@ body {
     width: 600px;
     margin: auto;
 }
+
+h1 {
+    padding: 1cm;
+    text-align: center;
+    background-position: fixed;
+    background-color: blueviolet;
+}
+
+h2 {
+    background-color: skyblue;
+}
