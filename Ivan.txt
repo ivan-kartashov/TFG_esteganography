@@ -39,3 +39,7 @@ el número de carácteres posibles según vayamos escribiendo. He tenido que usa
 Nota importante que vi al probarlo: Meter muchisimos caracteres suele empeorar la calidad y inflar su tamaño ayyyy.
 
 Añadidas cosas que hacer para Sebas.
+
+13/04/2026
+
+Preparación para la entrega parcial del proyecto. Añadido el nombre del programa "Escondinator" y el titulo de página "Escondinator de InfoSentry".
