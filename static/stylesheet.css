@@ -14,3 +14,7 @@ h1 {
 h2 {
     background-color: skyblue;
 }
+
+input:hover{
+    background-color: yellow;
+}
