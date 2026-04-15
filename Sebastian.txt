@@ -17,3 +17,10 @@ Cosas que tienes que hacer por ahora:
 
 4. Montate todo el entorno (Recuerda hacer pull de vez en cuando)
 
+15/4
+
+1- Sacar los BR que estan en el archivo de HTML, 
+2- Meter mas HTML para para tener otras paginas donde se haran otros tipos de encriptacion
+3- Pensar metodos de optimizar el programa
+4- Mejorar la interfaz de todo
+5- Crear iconos (los dos), e implementarlos en el sitio web. Poner un ID a cada boton y asignarles una imagen, en CSS o html
