@@ -4,6 +4,8 @@ from flask import Flask, render_template, request, send_file #flask es el que se
 
 import os #Permitira meternos en el sistema de archivos para sacar las imagenes
 
+import uuid #Lo necesitamos para que no se vuelva a sobreescribir en la misma imágen, que me estaba pasando durante el testing del nuevo código optimizado
+
 from stego import hide_message, extract_message
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
@@ -27,9 +29,12 @@ def hide():
     message = request.form["mensaje"]
     password = request.form["password"]
 
+    #Este pibe hará que hayan identificadores únicos en los nombres de las imágenes para que no se lien en el testing...
+    unique_id = str(uuid.uuid4())
+
     #input guardara la imagen original en el fichero uploads y output guardara la nueva imágen con el mensaje oculto
-    input = os.path.join(UPLOAD_FOLDER, image.filename)
-    output = os.path.join(UPLOAD_FOLDER, "hidden.png")
+    input = os.path.join(UPLOAD_FOLDER, f"{unique_id}_{image.filename}")
+    output = os.path.join(UPLOAD_FOLDER, f"{unique_id}_hidden.png")
 
     #Ahora la imagen se guarda físicamente, es decir, sin esto solamente se guardaria en la RAM y llamamos a la función final
     image.save(input)

@@ -35,6 +35,42 @@ def generate_password(genpasswd):
 #Esta es la funcion que escondera el mensaje, utilizando los bits menos significativos de cada canal rgb de cada pixel de la imágen
 def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
+    img = Image.open(soon_to_be_sus_img)
+    pixels = img.load()
+
+    compressed_message = zlib.compress(non_sus_message.encode())
+
+    final_password = generate_password(user_password)
+    fernet = Fernet(final_password)
+
+    mensaje_cifrado = fernet.encrypt(compressed_message)
+
+    binary = ''.join(format(b, '08b') for b in mensaje_cifrado)
+    binary += '1111111111111110'
+
+    width, height = img.size
+    total_positions = width * height * 3
+
+    if len(binary) > total_positions:
+        raise ValueError("Mensaje demasiado grande")
+
+    random.seed(user_password)
+
+    for bit in binary:
+        idx = random.randrange(total_positions)
+
+        pixel_index = idx // 3
+        c = idx % 3
+        x = pixel_index % width
+        y = pixel_index // width
+
+        rgb = list(pixels[x, y])
+        rgb[c] = (rgb[c] & ~1) | int(bit)
+        pixels[x, y] = tuple(rgb)
+
+    img.save(img_sus)
+""" def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
+
     #Aqui trabajamos con la imágen
     img = Image.open(soon_to_be_sus_img) #Abre la imágen, pero no la analiza, la deja abierta para su futuro analizamiento
 
@@ -59,7 +95,27 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     width, height = img.size #Ver el tamaño de imágen para luego calcular la cantidad de carácteres que le permitiremos al usuario
 
-    #Aqui hemos creado una lista de posiciones para que el mensaje oculto sea repartido por los bits de la imagen de una manera aleatoria y díficil de detectar
+    random.seed(user_password)
+
+    total_positions = width * height * 3
+    indices = list(range(total_positions))
+    random.shuffle(indices)
+
+    for i, bit in enumerate(binary):
+        idx = indices[i]
+
+        pixel_index = idx // 3
+        c = idx % 3
+        x = pixel_index % width
+        y = pixel_index // width
+
+        rgb = list(pixels[x, y])
+        rgb[c] = (rgb[c] & ~1) | int(bit)
+        pixels[x, y] = tuple(rgb)
+
+    img.save(img_sus) """
+
+"""     #Aqui hemos creado una lista de posiciones para que el mensaje oculto sea repartido por los bits de la imagen de una manera aleatoria y díficil de detectar
     positions = [(x, y, c) for y in range(height)
                             for x in range(width) 
                             for c in range(3)] #Le tuve que meter enters porque de otra manera no se poruqe no me funcionaba XD
@@ -76,13 +132,51 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
         rgb = list(pixels[x, y])
         rgb[c] = (rgb[c] & ~1) | int(bit)
         pixels[x, y] = tuple(rgb)
-
-    img.save(img_sus)
-
+"""
 
 #Con esta función descoprimiremos la imagen, o sea vamos a encontrar los bits de mensaje oculto
 #y posteriormente volver a convertirlo en un mensaje de texto
 def extract_message(sus_img, user_password):
+
+    img = Image.open(sus_img)
+    pixels = img.load()
+
+    width, height = img.size
+    total_positions = width * height * 3
+
+    random.seed(user_password)
+
+    bits = ""
+    marker = '1111111111111110'
+
+    for _ in range(total_positions):
+
+        idx = random.randrange(total_positions)
+
+        pixel_index = idx // 3
+        c = idx % 3
+        x = pixel_index % width
+        y = pixel_index // width
+
+        bits += str(pixels[x, y][c] & 1)
+
+        if marker in bits:
+            break
+
+    fin = bits.find(marker)
+    bits = bits[:fin]
+
+    data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8))
+
+    final_password = generate_password(user_password)
+    fernet = Fernet(final_password)
+
+    mensaje_comprimido = fernet.decrypt(data)
+
+    mensaje = zlib.decompress(mensaje_comprimido)
+
+    return mensaje.decode()
+""" def extract_message(sus_img, user_password):
 
     #Abrimos la imagen donde hay un mensaje escondido
     img = Image.open(sus_img)
@@ -91,6 +185,23 @@ def extract_message(sus_img, user_password):
 
     width, height = img.size #Sacamos el tamaño de la imágen de nuevo
 
+    random.seed(user_password)
+
+    total_positions = width * height * 3
+    indices = list(range(total_positions))
+    random.shuffle(indices)
+
+    bits = ""
+
+    for idx in indices:
+        pixel_index = idx // 3
+        c = idx % 3
+        x = pixel_index % width
+        y = pixel_index // width
+
+        bits += str(pixels[x, y][c] & 1)
+
+    
     positions = [(x, y, c) for y in range(height)
                             for x in range(width)
                             for c in range(3)]
@@ -101,7 +212,9 @@ def extract_message(sus_img, user_password):
 
     bits = ""
     for x, y, c in positions:
-        bits += str(pixels[x, y][c] & 1)
+        bits += str(pixels[x, y][c] & 1) 
+    """
+"""
 
     #Buscamos el final de la secuencia
     fin = bits.find('1111111111111110')
@@ -118,4 +231,4 @@ def extract_message(sus_img, user_password):
     #Descomprimimos el mensaje y lo devolvemos al usuario
     mensaje = zlib.decompress(mensaje_comprimido)
 
-    return mensaje.decode()
+    return mensaje.decode() """

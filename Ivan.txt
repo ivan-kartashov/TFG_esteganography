@@ -43,3 +43,16 @@ Añadidas cosas que hacer para Sebas.
 13/04/2026
 
 Preparación para la entrega parcial del proyecto. Añadido el nombre del programa "Escondinator" y el titulo de página "Escondinator de InfoSentry".
+
+29/04/2026
+
+- Optimización: He cambiado la manera de la que se generan las posiciones, ahora en vez de generarse
+miles o incluso en algunos casos millones de tuplas ahora deberia ir un poquillo más rápido, aunque
+todavía estará un poco lento con imágenes muy grandes. (Ahora las posiciones son pseudoaleatorias pero bahhh) 
+(Todavía no añadi comentarios así que... a esperar)
+
+- Optimización: Tuve que buscar modulos y encontre UUID, que permite generar nombres únicos para cada imágen que le metemos
+permitirá al programa, con un poco de esperanza, distinguir entre imágenes y no sobreescribir siempre la misma XDDD.
+
+-También tuve que sacrificar integridad de mensajes por velocidad de encriptacion, ojala podamos hacer que eso no sea  ecesario
+pero entonces tendriamos que mirarlo.
