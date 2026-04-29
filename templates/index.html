@@ -17,19 +17,20 @@
                 <p id="TextCapacity"></p> <!--En este caso le pasaremos al usuario la variable max_chars desde el JS-->
                 <textarea name="mensaje" id="mensajeInput" placeholder="Mensaje"></textarea>
                 <p id="TextRemaining"></p>
-                -
-                <br><br>
+                <p>-</p>
+                <h3>Introduce la Contraseña aqui:</h3>
                 <input type="password" name="password" placeholder="Contraseña (Opcional)">
-                <br><br>
                 <button type="submit">Ocultar</button>
-        </form>
+            </form>
 
         <hr>
 
         <h2>Extraer mensaje</h2>
             <form action="/extract" method="post" enctype="multipart/form-data">
-                <input type="file" name="imagen" required><br><br>
-                <input type="password" name="password" placeholder="Contraseña (Si tiene)"><br><br>
+                <input type="file" name="imagen" required>
+                <p>-</p>
+                <h3>Introduce la Contraseña aqui:</h3>
+                <input type="password" name="password" placeholder="Contraseña (Si tiene)">
                 <button type="submit">Extraer</button>
             </form>
 
