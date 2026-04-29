@@ -1,0 +1,3 @@
+29/04/2026
+
+- Comprobado el funcionamiento,y, definitivamente, el programa necesita optimización.
