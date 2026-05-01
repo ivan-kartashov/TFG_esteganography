@@ -3,33 +3,26 @@
 #Permitira reducir el tamaño de los archivos, en este caso los mensajes que meteremos en las imagenes
 import zlib 
 
-
 #Nos permitira reeemplazar los valores de bits completamente aleatorios, de esta manera siendo mucho más dificil de detectar
 import random 
-
 
 #Aqui importamos los hashes para poder encriptar de una manera más segura
 import hashlib 
 
-
 #Permitira traducir bytes y bits a formato de texto y viceversa
 import base64 
-
 
 #Permitira abrir, sacar los datos de la imagen, y trabajar con las imagenes
 from PIL import Image 
 
-
 #Permitira implementar cifrado simétrico para nuestra contraseña que utilizaremos para desbloquear los mensajes
 from cryptography.fernet import Fernet 
-
 
 #Esta función convertira la contraseña introducida en un formato de hash
 #para que no se pueda sacar el mensaje sin tener la contraseña, ya que el hashing ayudara bastante con la seguridad
 def generate_password(genpasswd):
 
     hash = hashlib.sha256(genpasswd.encode()).digest()
-
     return base64.urlsafe_b64encode(hash)
 
 #Esta es la funcion que escondera el mensaje, utilizando los bits menos significativos de cada canal rgb de cada pixel de la imágen
@@ -69,6 +62,7 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
         pixels[x, y] = tuple(rgb)
 
     img.save(img_sus)
+
 """ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     #Aqui trabajamos con la imágen
@@ -168,14 +162,17 @@ def extract_message(sus_img, user_password):
 
     data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8))
 
-    final_password = generate_password(user_password)
-    fernet = Fernet(final_password)
-
-    mensaje_comprimido = fernet.decrypt(data)
+    #Este try vé si hay una contraseña, si no hay contraseña intenta devolvar la información sin desencriptar con la contraseña del user
+    try:
+        final_password = generate_password(user_password)
+        fernet = Fernet(final_password)
+        mensaje_comprimido = fernet.decrypt(data)
+    except: #En caso de error (o sea, si no hay contraseña, o cualquier otro error, tendré que detectar el error exacto XD)
+        mensaje_comprimido = data
 
     mensaje = zlib.decompress(mensaje_comprimido)
-
     return mensaje.decode()
+
 """ def extract_message(sus_img, user_password):
 
     #Abrimos la imagen donde hay un mensaje escondido
