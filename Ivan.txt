@@ -56,3 +56,15 @@ permitirá al programa, con un poco de esperanza, distinguir entre imágenes y n
 
 -También tuve que sacrificar integridad de mensajes por velocidad de encriptacion, ojala podamos hacer que eso no sea  ecesario
 pero entonces tendriamos que mirarlo.
+
+01/05/2026
+
+- Módificado el código. He añadido un try/except para que si no hay contraseña se desencripte el mensaje sin usar la contraseña aunque no se la razón exacta de su fallo de funcionamiento.
+
+- Escrito la lista de tareas para los miembros de proyecto (esté no está subido a github ya que podría contener información sensible)
+
+01/05/2026 IK #2
+
+- Cambie los codigos de def hide/extract para que ahora se recorran los píxeles de manera distinta, ahora no deberia haber "repetición" ni "colisiónes", ya que el recorrido ahora es pseudoaleatorio, además ahora con la misma contraseña las posiciones deberian funcionar de una manera parecida entre las mismas contraseñas
+
+- Me SIGUEN faltando los comentarios, asi que... bleh 
