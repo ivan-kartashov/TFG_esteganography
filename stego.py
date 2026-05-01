@@ -47,10 +47,12 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
     if len(binary) > total_positions:
         raise ValueError("Mensaje demasiado grande")
 
-    random.seed(user_password)
+    seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
+    a = (seed | 1)  # impar → evita ciclos cortos
+    b = seed % total_positions
 
-    for bit in binary:
-        idx = random.randrange(total_positions)
+    for i, bit in enumerate(binary):
+        idx = (a * i + b) % total_positions
 
         pixel_index = idx // 3
         c = idx % 3
@@ -138,14 +140,16 @@ def extract_message(sus_img, user_password):
     width, height = img.size
     total_positions = width * height * 3
 
-    random.seed(user_password)
+    seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
+    a = (seed | 1)
+    b = seed % total_positions
 
     bits = ""
     marker = '1111111111111110'
 
-    for _ in range(total_positions):
+    for i in range(total_positions):
 
-        idx = random.randrange(total_positions)
+        idx = (a * i + b) % total_positions
 
         pixel_index = idx // 3
         c = idx % 3
@@ -154,20 +158,22 @@ def extract_message(sus_img, user_password):
 
         bits += str(pixels[x, y][c] & 1)
 
-        if marker in bits:
+        if bits.endswith(marker):
             break
 
     fin = bits.find(marker)
+    if fin == -1:
+        raise ValueError("No se encontró mensaje")
+
     bits = bits[:fin]
 
     data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8))
 
-    #Este try vé si hay una contraseña, si no hay contraseña intenta devolvar la información sin desencriptar con la contraseña del user
     try:
         final_password = generate_password(user_password)
         fernet = Fernet(final_password)
         mensaje_comprimido = fernet.decrypt(data)
-    except: #En caso de error (o sea, si no hay contraseña, o cualquier otro error, tendré que detectar el error exacto XD)
+    except:
         mensaje_comprimido = data
 
     mensaje = zlib.decompress(mensaje_comprimido)
