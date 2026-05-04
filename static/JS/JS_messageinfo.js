@@ -19,14 +19,14 @@ imagenInput.addEventListener("change", function() {
     })
     .then(response => response.text())
     .then(data => {
-        // Guardamos el numerito que nos traen de python y lo ponemos
+        // Guardamos el numero de las posiciones disponibles totales y las mostramos
         maxChars = parseInt(data); 
-        textCapacity.innerText = "Máx Char: " + maxChars;
+        textCapacity.innerText = "Número máximo de carácteres: " + maxChars;
         
         // Esto para actualizar el contador que viene siguiente
         updateCharCounter();
     })
-    .catch(error => console.error("Error:", error));//Control de errores de consola para nosotros, los del backend Sebas
+    .catch(error => console.error("Error:", error));//Control de errores de consola
 });
 
 //Esto es lo que "escucha" a que el usuario ponga input
@@ -40,10 +40,10 @@ function updateCharCounter() {
 
     const remaining = maxChars - longitud;
 
-    textRemaining.innerText = "Char. Remaining: " + remaining;
+    textRemaining.innerText = "Carácteres restantes: " + remaining;
 
-    //Esto es para que se vea más bonito cuando nos quedan pocos (relativamente pocos) caracteres pero es bastante (y muy bastante) imporbable que suceda
-    if (remaining < 5000) {
+    //Aqui le mostraremos el usuario la cantidad de restantes en rojo si ha superado el 20% de la capacidad total de la imágen, esto se debe a que podria inflar el tamaño de la imágen/reducir su calidad muy notablemente
+    if (remaining < (maxChars*0.8)) {
         textRemaining.style.color = "red";
     } else {
         textRemaining.style.color = "black";

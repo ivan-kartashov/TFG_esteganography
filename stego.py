@@ -16,7 +16,7 @@ import base64
 from PIL import Image 
 
 #Permitira implementar cifrado simétrico para nuestra contraseña que utilizaremos para desbloquear los mensajes
-from cryptography.fernet import Fernet 
+from cryptography.fernet import Fernet, InvalidToken
 
 #Esta función convertira la contraseña introducida en un formato de hash
 #para que no se pueda sacar el mensaje sin tener la contraseña, ya que el hashing ayudara bastante con la seguridad
@@ -28,88 +28,54 @@ def generate_password(genpasswd):
 #Esta es la funcion que escondera el mensaje, utilizando los bits menos significativos de cada canal rgb de cada pixel de la imágen
 def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
-    img = Image.open(soon_to_be_sus_img)
-    pixels = img.load()
-
-    compressed_message = zlib.compress(non_sus_message.encode())
-
-    final_password = generate_password(user_password)
-    fernet = Fernet(final_password)
-
-    mensaje_cifrado = fernet.encrypt(compressed_message)
-
-    binary = ''.join(format(b, '08b') for b in mensaje_cifrado)
-    binary += '1111111111111110'
-
-    width, height = img.size
-    total_positions = width * height * 3
-
-    if len(binary) > total_positions:
-        raise ValueError("Mensaje demasiado grande")
-
-    seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
-    a = (seed | 1)  # impar → evita ciclos cortos
-    b = seed % total_positions
-
-    for i, bit in enumerate(binary):
-        idx = (a * i + b) % total_positions
-
-        pixel_index = idx // 3
-        c = idx % 3
-        x = pixel_index % width
-        y = pixel_index // width
-
-        rgb = list(pixels[x, y])
-        rgb[c] = (rgb[c] & ~1) | int(bit)
-        pixels[x, y] = tuple(rgb)
-
-    img.save(img_sus)
-
-""" def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
-
     #Aqui trabajamos con la imágen
     img = Image.open(soon_to_be_sus_img) #Abre la imágen, pero no la analiza, la deja abierta para su futuro analizamiento
-
-    pixels = img.load() #Esta si que es la linea que ahora sacara los datos de la imagen como los metadatos
+    pixels = img.load() #Esta si que es la linea que ahora sacara los datos de la imagen como los metadatos para que ahora trabajemos utilizandolos
 
     #Ahora comprimimos el mensaje proporcionado por el usuario para máximizar la cantidad de carácteres permisibles
     compressed_message = zlib.compress(non_sus_message.encode())
 
-    #Con esta funcion generate_password vamos a encriptar el mensaje con la contraseña que ciframos antes
-    final_password = generate_password(user_password) 
-    
+    #Estas lineas encriptan la contraseña introducida por el usuario
+    final_password = generate_password(user_password)
     fernet = Fernet(final_password)
 
-    mensaje_cifrado = fernet.encrypt(compressed_message) #En esta línea encriptamos el mensaje comprimido con la contraseña final barajeada y encriptada
+    #En esta línea encriptamos el mensaje comprimido con la contraseña final barajeada y encriptada
+    mensaje_cifrado = fernet.encrypt(compressed_message) 
 
-    #Convertimos el mensaje a formato binario utizando un marcador único como de final
-    try:
-        binary = ''.join(format(b, '08b') for b in mensaje_cifrado) #Convierte la cadena del mensaje final a una cadena de bits
-        binary += '1111111111111110'  #Este es el marcador del final
-    except:
-        print("Error en las cadenas binarias.")
+    #Aquí lo pasamos todo al formato binario
+    binary = ''.join(format(b, '08b') for b in mensaje_cifrado)
+    binary += '1111111111111110' #En esta línea le indicamos que el marcador final es esta secuencia, o sea, aquí termina el mensaje
 
-    width, height = img.size #Ver el tamaño de imágen para luego calcular la cantidad de carácteres que le permitiremos al usuario
-
-    random.seed(user_password)
-
+    #Esta linea calcula el tamaño de la imágen y luego calcula el total de las posiciones totales
+    width, height = img.size
     total_positions = width * height * 3
-    indices = list(range(total_positions))
-    random.shuffle(indices)
 
+    #Aqui hacemos un raise si el mensaje del usuario es demasiado grande
+    if len(binary) > total_positions:
+        raise ValueError("Mensaje demasiado grande")
+
+    #Aquí creamos una "semilla" a partir de la contraseña encriptada para generar una secuencia pseudoaleatoria apartir de esta "seed"
+    seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
+    a = (seed | 1) 
+    b = seed % total_positions
+
+    #Aquí usaremos nuestra seed para detectar cada posición y sobreescribir el bit menos significativo de canal rgb de cada pixel
     for i, bit in enumerate(binary):
-        idx = indices[i]
+        idx = (a * i + b) % total_positions #Está es la secuencia que ahora dependera de la "seed" creada antes, aquí se hace la indexación pseudoaleatoria de los bits
 
+        #En estas lineas convertimos el idx en posiciones exáctas como (x, y) para posiciones de píxeles y (R=0,G=0,B=0) para los canales RGB de los píxeles
         pixel_index = idx // 3
         c = idx % 3
         x = pixel_index % width
         y = pixel_index // width
 
-        rgb = list(pixels[x, y])
-        rgb[c] = (rgb[c] & ~1) | int(bit)
+        rgb = list(pixels[x, y]) #Posiciones de píxeles
+        rgb[c] = (rgb[c] & ~1) | int(bit) #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
         pixels[x, y] = tuple(rgb)
 
-    img.save(img_sus) """
+    img.save(img_sus) #Guardamos la imágen con información escondida
+
+
 
 """     #Aqui hemos creado una lista de posiciones para que el mensaje oculto sea repartido por los bits de la imagen de una manera aleatoria y díficil de detectar
     positions = [(x, y, c) for y in range(height)
@@ -140,13 +106,16 @@ def extract_message(sus_img, user_password):
     width, height = img.size
     total_positions = width * height * 3
 
+    #Aquí intentamos aberiguar la "seed" usada en la encriptación de datos para poder desencriptar correctamente las posiciones, en caso de que la contraseña sea correcta por supuesto
     seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
     a = (seed | 1)
     b = seed % total_positions
 
+    #Creamos la lista de los bits menos significativos y le añadimos el mismo marcador que hay en el hide_message para detectar cuando se extrajo el mensaje completo
     bits = ""
     marker = '1111111111111110'
 
+    #Aquí recorremos todas las posiciones, utilizando el indexing de una manera casi identica a como lo utilizamos en la función hide_message
     for i in range(total_positions):
 
         idx = (a * i + b) % total_positions
@@ -156,82 +125,27 @@ def extract_message(sus_img, user_password):
         x = pixel_index % width
         y = pixel_index // width
 
-        bits += str(pixels[x, y][c] & 1)
+        bits += str(pixels[x, y][c] & 1) #Aquí extraemos el último bit de cada canal RGB
 
-        if bits.endswith(marker):
+        if bits.endswith(marker): #Ahora le diremos que si encuentra el marcador de final que paré el for
             break
 
     fin = bits.find(marker)
     if fin == -1:
         raise ValueError("No se encontró mensaje")
 
-    bits = bits[:fin]
+    bits = bits[:fin] #Aquí utilizamos slicing para quitar el marcador de final ya que no aporta ninguna parte del mensaje, que ahora intentaremos de desencriptar con la contraseña
 
-    data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8))
+    data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8)) #Esta linea reconstruira el mensaje, pero todavia cifrado
 
+    #Aquí intentaremos descomprimir el mensaje utilizando la contraseña 
     try:
         final_password = generate_password(user_password)
         fernet = Fernet(final_password)
         mensaje_comprimido = fernet.decrypt(data)
-    except:
-        mensaje_comprimido = data
 
-    mensaje = zlib.decompress(mensaje_comprimido)
+    except InvalidToken:
+        raise ValueError("Contraseña incorrecta o datos corruptos")
+
+    mensaje = zlib.decompress(mensaje_comprimido) 
     return mensaje.decode()
-
-""" def extract_message(sus_img, user_password):
-
-    #Abrimos la imagen donde hay un mensaje escondido
-    img = Image.open(sus_img)
-
-    pixels = img.load() #Cargamos los datos de la imágen donde supuestamente hay un mensaje escondido (guiño, guiño)
-
-    width, height = img.size #Sacamos el tamaño de la imágen de nuevo
-
-    random.seed(user_password)
-
-    total_positions = width * height * 3
-    indices = list(range(total_positions))
-    random.shuffle(indices)
-
-    bits = ""
-
-    for idx in indices:
-        pixel_index = idx // 3
-        c = idx % 3
-        x = pixel_index % width
-        y = pixel_index // width
-
-        bits += str(pixels[x, y][c] & 1)
-
-    
-    positions = [(x, y, c) for y in range(height)
-                            for x in range(width)
-                            for c in range(3)]
-
-    #ES IMPORTANTE: Aqui no hay flujo de errores porque el flujo de errores se encuentra en un nível más alto del backend, mire app.py para más detalles
-    random.seed(user_password) #Generamos (O mejor dicho, regeneramos la contraseña) como antes pero esta vez para otro fin (extracción)
-    random.shuffle(positions)
-
-    bits = ""
-    for x, y, c in positions:
-        bits += str(pixels[x, y][c] & 1) 
-    """
-"""
-
-    #Buscamos el final de la secuencia
-    fin = bits.find('1111111111111110')
-    bits = bits[:fin]
-
-    #Convertimos los bits en bytes
-    data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8))
-
-    #Desciframos los bytes usando la contraseña final...
-    final_password = generate_password(user_password)
-    fernet = Fernet(final_password)
-    mensaje_comprimido = fernet.decrypt(data)
-
-    #Descomprimimos el mensaje y lo devolvemos al usuario
-    mensaje = zlib.decompress(mensaje_comprimido)
-
-    return mensaje.decode() """

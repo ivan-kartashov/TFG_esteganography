@@ -12,7 +12,9 @@ uploads/
 #Variables sensibles
 .env
 
-#Archivos del sistema (En mi venv no estan)
+#Archivos del sistema (En mi venv no estan, eso por si acaso)
 .DS_Store
 Thumbs.db
 
+#Entorno de desarollo (si veis esto, probablemente no lo tengaís, esto es para pruebas de funcionamiento del programa, ficheros de prueba, etc..., ya que lo que si esta en el repo de github es parte del entorno de producción)
+Development_Area/
