@@ -19,7 +19,7 @@ Cosas que tienes que hacer por ahora:
 
 15/4
 
-1- Sacar los BR que estan en el archivo de HTML, -
+1- Sacar los BR que estan en el archivo de HTML
 2- Meter mas HTML para para tener otras paginas donde se haran otros tipos de encriptacion
 3- Pensar metodos de optimizar el programa
 4- Mejorar la interfaz de todo
@@ -29,6 +29,6 @@ Cosas que tienes que hacer por ahora:
 
 1- Ya saque los BR
 2- No tengo idea de exactamente porque no me aparece la segunda pagina de index que cree pero lo digo ahora
-Hice el Push pare ver si asi la toma en cuenta, en esa otra pestaña de index no meti nada, salvo los hypervinculos
+Hice el Push pare ver si asi la toma en cuenta, en esa otra pestaña de index no meti nada extra, salvo los hypervinculos que tambien estan en la original
 para que lleve al usuario a X pagina. Por lo que no deberia dar problemas.
 4- Agregue el <hr> a la interfaz, no se que tan bien quedaera, digan ustedes si les gusta
