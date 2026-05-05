@@ -38,7 +38,13 @@ def hide():
 
     #Ahora la imagen se guarda físicamente, es decir, sin esto solamente se guardaria en la RAM y llamamos a la función final
     image.save(input)
-    hide_message(input, output, message, password)
+    try:
+        hide_message(input, output, message, password)
+        if not os.path.exists(output): #Si no se genera la imágen/no está en la ruta
+            return "No se genero la imágen"
+    except:
+        print("Hubo un error al esconder la información")
+        return "Error al ocultar el mensaje" #Salimos del programa si hay un error en la lógica en si, no en los archivos
 
     return send_file(output, as_attachment=True)
 

@@ -80,3 +80,9 @@ pero entonces tendriamos que mirarlo.
 - Una anotación rápida, en la linea 73 de stego.py podria hacer un if si es necesario reemplazar el bit menos significativo, para prevenir tener que sobreescribir bits no necesarios y ahorrar bastante problemas de optimización.
 
 - En stego.py he importado invalidtoken para detectar errores relacionados con los datos extraidos de la imágen, ya que antes podria intentar sacar información aunque no habia ninguna cifrada implicitamente.
+
+05/05/2026
+
+- He añadido un pequeño control de errores en la app en la parte de hide para que salte un error como salta en la parte de extracción, el html usa la misma lógica en ambos extracción y hide.
+
+- Añadi una carpeta de "assets" que es donde tendremos nuestros favicons, imagenes de botones, etc... es importante que los favicons, imagenes sean de la extensión .webp para cargarse lo más rápido posible.

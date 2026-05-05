@@ -75,27 +75,6 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     img.save(img_sus) #Guardamos la imágen con información escondida
 
-
-
-"""     #Aqui hemos creado una lista de posiciones para que el mensaje oculto sea repartido por los bits de la imagen de una manera aleatoria y díficil de detectar
-    positions = [(x, y, c) for y in range(height)
-                            for x in range(width) 
-                            for c in range(3)] #Le tuve que meter enters porque de otra manera no se poruqe no me funcionaba XD
-
-    random.seed(user_password) #Usando la semilla "password" podemos asegurarnos de que la encriptación va a ser única para cada contraseña, lo que significa que cada contraseña igual sera encriptada/desencriptada de la misma manera y sin dar errores (ojala)
-    random.shuffle(positions)
-
-    if len(binary) > len(positions): #Un puequeño flujo de errores
-        raise ValueError("Mensaje demasiado grande")
-
-    #Aqui ocultamos los bits que componen nuestro mensaje escondido en los canales rgb de los pixeles de la imágen
-    for i, bit in enumerate(binary):
-        x, y, c = positions[i]
-        rgb = list(pixels[x, y])
-        rgb[c] = (rgb[c] & ~1) | int(bit)
-        pixels[x, y] = tuple(rgb)
-"""
-
 #Con esta función descoprimiremos la imagen, o sea vamos a encontrar los bits de mensaje oculto
 #y posteriormente volver a convertirlo en un mensaje de texto
 def extract_message(sus_img, user_password):

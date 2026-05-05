@@ -12,7 +12,7 @@ uploads/
 #Variables sensibles
 .env
 
-#Archivos del sistema (En mi venv no estan, eso por si acaso)
+#Archivos del sistema 
 .DS_Store
 Thumbs.db
 

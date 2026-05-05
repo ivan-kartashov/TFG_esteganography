@@ -30,6 +30,11 @@
                 <button type="submit">Ocultar</button>
             </form>
 
+            {% if hide_error %} 
+            <h3>Hide Error:</h3> 
+            <p>{{ hide_error }}</p>
+            {% endif %}
+
         <hr>
         <h2>Extraer mensaje</h2>
             <form action="/extract" method="post" enctype="multipart/form-data">
