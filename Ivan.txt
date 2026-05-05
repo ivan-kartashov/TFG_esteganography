@@ -86,3 +86,7 @@ pero entonces tendriamos que mirarlo.
 - He añadido un pequeño control de errores en la app en la parte de hide para que salte un error como salta en la parte de extracción, el html usa la misma lógica en ambos extracción y hide.
 
 - Añadi una carpeta de "assets" que es donde tendremos nuestros favicons, imagenes de botones, etc... es importante que los favicons, imagenes sean de la extensión .webp para cargarse lo más rápido posible.
+
+- He cambiado en stego.py la manera de la que se seleccionan los bits a ser cambiados para evitar crear una lista/tupla en cada iteración, que mejorará el rendimiento un poquillo.
+
+- He quitado lineas comentadas del archivo antiguo que no necesitabamos ya que tenemos los comentarios nuevos.
