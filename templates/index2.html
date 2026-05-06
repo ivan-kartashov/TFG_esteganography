@@ -18,11 +18,16 @@
                 <p id="TextCapacity"></p> <!--En este caso le pasaremos al usuario la variable max_chars desde el JS-->
                 <textarea name="mensaje" id="mensajeInput" placeholder="Mensaje"></textarea>
                 <p id="TextRemaining"></p> <!--La cantidad de texto restante de texto disponible-->
-                <p></p>
+                -
                 <h3>Introduce la Contraseña aqui:</h3>
                 <input type="password" name="password" placeholder="Contraseña (Opcional)">
                 <button type="submit">Ocultar</button>
             </form>
+
+            {% if hide_error %} 
+            <h3>Hide Error:</h3> 
+            <p>{{ hide_error }}</p>
+            {% endif %}
 
         <hr>
         <h2>Extraer mensaje</h2>
