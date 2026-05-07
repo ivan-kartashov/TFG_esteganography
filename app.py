@@ -9,6 +9,7 @@ import uuid #Lo necesitamos para que no se vuelva a sobreescribir en la misma im
 from stego import hide_message, extract_message
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
 UPLOAD_FOLDER = "uploads" #Dice el nombre de la carpeta en la que se guadaran las imagenes
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
 
@@ -87,5 +88,5 @@ def extraer():
 #Comprueba si el archivo se ejecuta directamente
 if __name__ == "__main__": 
 
-    #Lanza el servidor (En el puerto 5000 especificamente por ahora)
-    app.run(debug=True, port=5000) 
+    #Lanza el servidor (Le quite el puerto y el debug para que render no se vuelva loco)
+    app.run(debug=False) 
