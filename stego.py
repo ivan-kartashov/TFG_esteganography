@@ -25,11 +25,24 @@ def generate_password(genpasswd):
     hash = hashlib.sha256(genpasswd.encode()).digest()
     return base64.urlsafe_b64encode(hash)
 
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+def allowed_file(filename):
+    return (
+        "." in filename and
+        filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+        )
+
+
 #Esta es la funcion que escondera el mensaje, utilizando los bits menos significativos de cada canal rgb de cada pixel de la imágen
 def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     #Aqui trabajamos con la imágen
-    img = Image.open(soon_to_be_sus_img) #Abre la imágen, pero no la analiza, la deja abierta para su futuro analizamiento
+    try:
+        img = Image.open(soon_to_be_sus_img) #Abre la imágen, pero no la analiza, la deja abierta para su futuro analizamiento
+        img.verify()
+    except:
+        return "Imágen no válida"
     pixels = img.load() #Esta si que es la linea que ahora sacara los datos de la imagen como los metadatos para que ahora trabajemos utilizandolos
 
     #Ahora comprimimos el mensaje proporcionado por el usuario para máximizar la cantidad de carácteres permisibles
@@ -79,7 +92,11 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 #y posteriormente volver a convertirlo en un mensaje de texto
 def extract_message(sus_img, user_password):
 
-    img = Image.open(sus_img)
+    try:
+        img = Image.open(sus_img)
+        img.verify
+    except:
+        return "Imágen no válida"
     pixels = img.load()
 
     width, height = img.size

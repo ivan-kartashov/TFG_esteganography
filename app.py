@@ -1,15 +1,14 @@
 from flask import Flask, render_template, request, send_file #flask es el que se encargara de levantar la web, render_template permite 
 #cargarar archivos html, request nos permitira que el usuario interactue con el codigo a través de la interfaz y send_file permite que 
 #el codigo le envie datos descargables al usuario
-
 import os #Permitira meternos en el sistema de archivos para sacar las imagenes
-
 import uuid #Lo necesitamos para que no se vuelva a sobreescribir en la misma imágen, que me estaba pasando durante el testing del nuevo código optimizado
-
-from stego import hide_message, extract_message
+from stego import hide_message, extract_message, allowed_file
+from werkzeug.utils import secure_filename #Asegura que los nombres de las imagenes no sean problematicos
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
+app.config["MAX_CONTENT_LENGTH"] = 30 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
 UPLOAD_FOLDER = "uploads" #Dice el nombre de la carpeta en la que se guadaran las imagenes
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
 
@@ -30,11 +29,13 @@ def hide():
     message = request.form["mensaje"]
     password = request.form["password"]
 
-    #Este pibe hará que hayan identificadores únicos en los nombres de las imágenes para que no se lien en el testing...
-    unique_id = str(uuid.uuid4())
+    if not allowed_file(image.filename):
+        return "Formato no permitido"
 
+    unique_id = str(uuid.uuid4()) #Este tio hará que hayan identificadores únicos en los nombres de las imágenes para que no se lien en el testing...
+    filename = secure_filename(image.filename) #Aqui utilizamos el secure filename para eliminar espacios y hacer que el nombre sea seguro para nuestro programa
     #input guardara la imagen original en el fichero uploads y output guardara la nueva imágen con el mensaje oculto
-    input = os.path.join(UPLOAD_FOLDER, f"{unique_id}_{image.filename}")
+    input = os.path.join(UPLOAD_FOLDER,f"{unique_id}_{filename}") 
     output = os.path.join(UPLOAD_FOLDER, f"{unique_id}_hidden.png")
 
     #Ahora la imagen se guarda físicamente, es decir, sin esto solamente se guardaria en la RAM y llamamos a la función final
