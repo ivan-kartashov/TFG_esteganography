@@ -40,6 +40,7 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
     #Aqui trabajamos con la imágen
     try:
         img = Image.open(soon_to_be_sus_img) #Abre la imágen, pero no la analiza, la deja abierta para su futuro analizamiento
+        img.convert("RGB")
         img.verify()
     except:
         return "Imágen no válida"
@@ -94,6 +95,7 @@ def extract_message(sus_img, user_password):
 
     try:
         img = Image.open(sus_img)
+        img.convert("RGB")
         img.verify
     except:
         return "Imágen no válida"

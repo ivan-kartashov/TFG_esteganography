@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename #Asegura que los nombres de las image
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
-app.config["MAX_CONTENT_LENGTH"] = 30 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
+#app.config["MAX_CONTENT_LENGTH"] = 30 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")#Dice el nombre de la carpeta en la que se guadaran las imagenes y asegura que esta esté
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
 
@@ -17,6 +17,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al
 @app.route("/")
 def index():
     return render_template("index.html") #La carpeta templates es estrictamente llamada así para que esto funcione correctamente
+
 
 
 @app.route("/hide", methods=["POST"]) #Define una dirección nueva "/hide"
@@ -49,6 +50,7 @@ def hide():
         return f"Error al ocultar el mensaje: {str(e)}" #Salimos del programa si hay un error en la lógica en si, no en los archivos
 
     return send_file(output, as_attachment=True)
+
 
 @app.route("/lengthofmessage", methods=["POST"])
 def lengthofmessage():
