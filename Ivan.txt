@@ -90,3 +90,11 @@ pero entonces tendriamos que mirarlo.
 - He cambiado en stego.py la manera de la que se seleccionan los bits a ser cambiados para evitar crear una lista/tupla en cada iteración, que mejorará el rendimiento un poquillo.
 
 - He quitado lineas comentadas del archivo antiguo que no necesitabamos ya que tenemos los comentarios nuevos.
+
+07/05/2026
+
+- No apunte lo que hice, el historial esta en los push de github...
+
+08/05/2026
+
+- He implementado un botón de borrado de la imágen seleccionada (quita la imágen, reinicia los contadores de carácteres restantes, etc...).

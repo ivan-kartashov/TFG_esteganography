@@ -15,7 +15,8 @@
         <hr>
         <h2>Ocultar mensaje</h2>
             <form action="/hide" method="post" enctype="multipart/form-data" > <!--Para sebas, eñ action indicira que ruta de aplicación llamamos, acción que será post ya que el usuario envia la imágen, mensaje y contraseña hacia nuestra aplicación y luego el enctype permite que el usuario envie imágenes-->
-                <input type="file" name="imagen" id="imagenInput" required :hover>                
+                <input type="file" name="imagen" id="imagenInput" required :hover>
+                <button type="button" onclick="quitarimgseleccionada()">X</button>                
                 <p id="TextCapacity"></p> <!--En este caso le pasaremos al usuario la variable max_chars desde el JS-->
                 <textarea name="mensaje" id="mensajeInput" placeholder="Mensaje"></textarea>
                 <p id="TextRemaining"></p> <!--La cantidad de texto restante de texto disponible-->

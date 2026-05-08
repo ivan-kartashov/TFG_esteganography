@@ -35,7 +35,7 @@ mensajeArea.addEventListener("input", updateCharCounter);
 
 function updateCharCounter() {
     const longitud = mensajeArea.value.length;
-    
+
     // Por si no hay imágen guardada:
     if (maxChars === 0 && longitud === 0) return;
 
@@ -51,8 +51,15 @@ function updateCharCounter() {
     }
 }
 
-
-
+//esta es la funcion que actua cuando se quita la imagen
+function quitarimgseleccionada() {
+    document.getElementById("imagenInput").value = "";
+    textCapacity.innerText = null;
+    textRemaining.innerText = null;
+    textRemaining.style.color = "black";
+    mensajeArea.maxLength = null;
+    mensajeArea.value = null;
+}
 
 
 
