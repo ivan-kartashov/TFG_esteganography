@@ -44,9 +44,9 @@ def hide():
         hide_message(input, output, message, password)
         if not os.path.exists(output): #Si no se genera la imágen/no está en la ruta
             return "No se genero la imágen"
-    except:
-        print("Hubo un error al esconder la información")
-        return "Error al ocultar el mensaje" #Salimos del programa si hay un error en la lógica en si, no en los archivos
+    except Exception as e:
+        print("ERROR REAL:", e)
+        return f"Error al ocultar el mensaje: {str(e)}" #Salimos del programa si hay un error en la lógica en si, no en los archivos
 
     return send_file(output, as_attachment=True)
 
