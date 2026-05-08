@@ -19,9 +19,10 @@ imagenInput.addEventListener("change", function() {
     })
     .then(response => response.text())
     .then(data => {
-        // Guardamos el numero de las posiciones disponibles totales y las mostramos
+        // Guardamos el numero de las posiciones disponibles totales y las mostramos, ademas de limitar el número de carácteres al usuario en el textarea
         maxChars = parseInt(data); 
         textCapacity.innerText = "Número máximo de carácteres: " + maxChars;
+        mensajeInput.maxLength = maxChars;
         
         // Esto para actualizar el contador que viene siguiente
         updateCharCounter();
