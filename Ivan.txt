@@ -98,3 +98,5 @@ pero entonces tendriamos que mirarlo.
 08/05/2026
 
 - He implementado un botón de borrado de la imágen seleccionada (quita la imágen, reinicia los contadores de carácteres restantes, etc...).
+
+- He arreglado el despliege a render, necesitaremos más testing para detectar errores pero ahora deberia funcionar.
