@@ -37,6 +37,14 @@ def allowed_file(filename):
 #Esta es la funcion que escondera el mensaje, utilizando los bits menos significativos de cada canal rgb de cada pixel de la imágen
 def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
+    #Si el usuario no pone contraseña que no se cifre
+    if user_password:
+        final_password = generate_password(user_password)
+        fernet = Fernet(final_password)
+        mensaje_cifrado = fernet.encrypt(compressed_message)
+    else:
+        mensaje_cifrado = compressed_message
+
     #Aqui trabajamos con la imágen
     try:
         img = Image.open(soon_to_be_sus_img) #Abre la imágen, pero no la analiza, la deja abierta para su futuro analizamiento
@@ -92,6 +100,12 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 #Con esta función descoprimiremos la imagen, o sea vamos a encontrar los bits de mensaje oculto
 #y posteriormente volver a convertirlo en un mensaje de texto
 def extract_message(sus_img, user_password):
+
+    if user_password:
+        fernet = Fernet(generate_password(user_password))
+        mensaje_comprimido = fernet.decrypt(data)
+    else:
+        mensaje_comprimido = data
 
     try:
         img = Image.open(sus_img)
