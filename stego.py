@@ -96,12 +96,9 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 def extract_message(sus_img, user_password):
 
     try:
-        img = Image.open(sus_img)
-        img.convert("RGB")
-        img.verify()
-        img = Image.open(sus_img)
-    except:
-        return "Imágen no válida"
+        img = Image.open(sus_img).convert("RGB")
+    except Exception:
+        return "Imagen no válida"
     pixels = img.load()
 
     width, height = img.size
