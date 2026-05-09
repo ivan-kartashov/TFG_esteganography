@@ -4,7 +4,7 @@
 import zlib 
 
 #Nos permitira reeemplazar los valores de bits completamente aleatorios, de esta manera siendo mucho más dificil de detectar
-import random 
+#import random 
 
 #Aqui importamos los hashes para poder encriptar de una manera más segura
 import hashlib 

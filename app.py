@@ -13,12 +13,15 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")#Dice el nombre de la carpet
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
 
 
-#Esto hara que index.html se muestre como página principal si el usuario busca localhost:5000/ en su navegador
+#Esto hara que main.html se muestre como página principal si el usuario busca localhost:5000/ en su navegador
 @app.route("/")
 def index():
-    return render_template("index.html") #La carpeta templates es estrictamente llamada así para que esto funcione correctamente
+    return render_template("main.html") #La carpeta templates es estrictamente llamada así para que esto funcione correctamente
 
-
+#Esto hara que se pueda acceder a está funcionalidad de la app con el enlace /escondinator
+@app.route("/escondinator")
+def escondinator():
+    return render_template("escondinator.html")
 
 @app.route("/hide", methods=["POST"]) #Define una dirección nueva "/hide"
 def hide():
