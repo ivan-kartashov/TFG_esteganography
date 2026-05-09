@@ -9,6 +9,7 @@ __pycache__/
 #Imágenes de prueba
 Test_Images/
 uploads/
+uploads_dev/
 
 #Variables sensibles
 .env
