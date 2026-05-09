@@ -100,3 +100,9 @@ pero entonces tendriamos que mirarlo.
 - He implementado un botón de borrado de la imágen seleccionada (quita la imágen, reinicia los contadores de carácteres restantes, etc...).
 
 - He arreglado el despliege a render, necesitaremos más testing para detectar errores pero ahora deberia funcionar.
+
+09/05/2026
+
+- He cambiado algunas cosillas de Sebas (como por ejemplo cambiar la posición de header y etiqueta correcta, que estaba por debajo del titulo, del footer, que estaba por encima del script)
+
+- Hize que el servidor vaya con links a templates diferentes.
