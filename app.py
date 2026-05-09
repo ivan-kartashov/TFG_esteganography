@@ -88,7 +88,7 @@ def extraer():
     except:
         message = "Error: contraseña incorrecta/Imagen Sin mensaje"
 
-    return render_template("index.html", mensaje_extraido=message)
+    return render_template("escondinator.html", mensaje_extraido=message)
 
 
 #Comprueba si el archivo se ejecuta directamente
