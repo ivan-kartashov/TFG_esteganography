@@ -32,9 +32,6 @@ input:hover{
 }
 
 #infosentry-description{
-    font-size: 18px;
-    color: white;
-    max-width: 800px;
-    margin: auto;
-    line-height: 1.6;
+    color: black;
+    font-size: 20px;
 }
