@@ -106,3 +106,9 @@ pero entonces tendriamos que mirarlo.
 - He cambiado algunas cosillas de Sebas (como por ejemplo cambiar la posición de header y etiqueta correcta, que estaba por debajo del titulo, del footer, que estaba por encima del script)
 
 - Hize que el servidor vaya con links a templates diferentes.
+
+10/05/2026
+
+- Modificada la documentación.
+
+- 
