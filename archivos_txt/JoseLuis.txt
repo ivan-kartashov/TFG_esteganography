@@ -2,3 +2,6 @@
 
 - Comprobado el funcionamiento,y, definitivamente, el programa necesita optimización.
 - Cambiado titulo en html y su formato en css
+
+10/5/2026 
+He Modificado el stylesheet.css y he añadido el titulo de la empresa y un parrafo descriptivo en el main.html
