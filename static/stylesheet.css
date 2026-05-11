@@ -1,7 +1,8 @@
 body {
     font-family: Arial;
-    width: 600px;
+    width: 100%;
     margin: auto;
+    grid-area: auto;
 }
 
 h1 {
@@ -34,4 +35,13 @@ input:hover{
 #infosentry-description{
     color: black;
     font-size: 20px;
+}
+
+
+header {
+    background-color: skyblue;
+}
+
+footer {
+    background-color: skyblue;
 }
