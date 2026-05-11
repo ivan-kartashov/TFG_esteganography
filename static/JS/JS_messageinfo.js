@@ -70,7 +70,11 @@ function quitarimgseleccionadaextract() {
     textRemaining.style.color = "black";
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
-    textRemaining.innerText.getElementsByClassName("extracted_message") = null;
+    //Aqui recorremos cada elemento de la clase para quitar el contenido del extracted message flabadazabalright
+    const elementos = document.getElementsByClassName("extracted_message");
+    for (let i = 0; i < elementos.length; i++) {
+        elementos[i].innerText = "";
+    }
 }
 
 
