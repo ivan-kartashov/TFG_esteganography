@@ -55,36 +55,57 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
     #En esta línea encriptamos el mensaje comprimido con la contraseña final barajeada y encriptada
     mensaje_cifrado = fernet.encrypt(compressed_message) 
 
-#Aquí lo pasamos todo al formato binario
-    binary = ''.join(format(b, '08b') for b in mensaje_cifrado)
-    binary += '1111111111111110' #En esta línea le indicamos que el marcador final es esta secuencia, o sea, aquí termina el mensaje
+    marker = '1111111111111110'#En esta línea le indicamos que el marcador final es esta secuencia, o sea, aquí termina el mensaje
 
     #Esta linea calcula el tamaño de la imágen y luego calcula el total de las posiciones totales
     width, height = img.size
     total_positions = width * height * 3
+    total_bits = (len(mensaje_cifrado) * 8) + len(marker)
 
     #Aqui hacemos un raise si el mensaje del usuario es demasiado grande
-    if len(binary) > total_positions:
+    if total_bits > total_positions:
         raise ValueError("Mensaje demasiado grande")
 
-    #Aquí creamos una "semilla" a partir de la contraseña encriptada para generar una secuencia pseudoaleatoria apartir de esta "seed"
+    #Aquí creamos una "semilla" de secuencias pseudoaleatorias a partir de la contraseña encriptada para generar una secuencia pseudoaleatoria apartir de esta "seed"
     seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
-    a = (seed | 1) 
+    a = (seed | 1)
     b = seed % total_positions
 
-    #Aquí usaremos nuestra seed para detectar cada posición y sobreescribir el bit menos significativo de canal rgb de cada pixel
-    for i, bit in enumerate(binary):
-        idx = (a * i + b) % total_positions #Está es la secuencia que ahora dependera de la "seed" creada antes, aquí se hace la indexación pseudoaleatoria de los bits
+    bit_index = 0
 
-        #En estas lineas convertimos el idx en posiciones exáctas como (x, y) para posiciones de píxeles y (R=0,G=0,B=0) para los canales RGB de los píxeles
+    #Aquí usaremos nuestra seed para detectar cada posición y sobreescribir el bit menos significativo de canal rgb de cada pixel, en este caso procesando byte por byte
+    for byte in mensaje_cifrado:
+        for eachbit in range(8): #O sea, por cada bit
+
+            bit = (byte >> (7 - eachbit)) & 1
+
+            idx = (a * bit_index + b) % total_positions #Está es la secuencia que ahora dependera de la "seed" creada antes, aquí se hace la indexación pseudoaleatoria de los bits
+            #En estas lineas convertimos el idx en posiciones exáctas como (x, y) para posiciones de píxeles y (R=0,G=0,B=0) para los canales RGB de los píxeles
+            pixel_index = idx // 3
+            c = idx % 3
+            x = pixel_index % width
+            y = pixel_index // width
+
+            rgb = list(pixels[x, y]) #Posiciones de píxeles
+            rgb[c] = (rgb[c] & ~1) | bit #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
+            pixels[x, y] = tuple(rgb)
+
+            bit_index += 1
+
+    #Ahora se añade el final de la escribientura con el marcador de final, utilizando la misma lógica del for anterior
+    for bit in marker:
+        idx = (a * bit_index + b) % total_positions 
+        
         pixel_index = idx // 3
         c = idx % 3
         x = pixel_index % width
         y = pixel_index // width
 
-        rgb = list(pixels[x, y]) #Posiciones de píxeles
-        rgb[c] = (rgb[c] & ~1) | int(bit) #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
+        rgb = list(pixels[x, y]) 
+        rgb[c] = (rgb[c] & ~1) | int(bit) 
         pixels[x, y] = tuple(rgb)
+
+        bit_index += 1
 
     img.save(img_sus) #Guardamos la imágen con información escondida
 
@@ -97,46 +118,62 @@ def extract_message(sus_img, user_password):
 
     try:
         img = Image.open(sus_img).convert("RGB")
-    except Exception:
+    except:
         return "Imagen no válida"
-    pixels = img.load()
 
+    pixels = img.load()
     width, height = img.size
     total_positions = width * height * 3
 
-    #Aquí intentamos aberiguar la "seed" usada en la encriptación de datos para poder desencriptar correctamente las posiciones, en caso de que la contraseña sea correcta por supuesto
     seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
     a = (seed | 1)
     b = seed % total_positions
 
-    #Creamos la lista de los bits menos significativos y le añadimos el mismo marcador que hay en el hide_message para detectar cuando se extrajo el mensaje completo
-    bits = ""
-    marker = '1111111111111110'
+    #Ahora pondremos el marcador en formato de bytes, para que sea más eficiente en la memoria
+    marker = b'\xff\xfe'  
+    marker_len = len(marker)
 
-    #Aquí recorremos todas las posiciones, utilizando el indexing de una manera casi identica a como lo utilizamos en la función hide_message
+    buffer = bytearray() #Aquí guardaremos el mensaje final reconstruido
+    current_byte = 0
+    bit_count = 0
+
+    marker_buffer = bytearray() #Asegura que se guarden los ultimos bits para el marcador final
+
     for i in range(total_positions):
 
-        idx = (a * i + b) % total_positions
+        idx = (a * i + b) % total_positions #Calculamos la posicion pseudoaleatoria y desde aqui el código es casi identico a /hide, con algunas excepciones
 
         pixel_index = idx // 3
         c = idx % 3
         x = pixel_index % width
         y = pixel_index // width
 
-        bits += str(pixels[x, y][c] & 1) #Aquí extraemos el último bit de cada canal RGB
+        bit = pixels[x, y][c] & 1 #Aquí extraemos el bit menos significativo de cada canal rgb de cada pixel
 
-        if bits.endswith(marker): #Ahora le diremos que si encuentra el marcador de final que paré el for
-            break
+        #Aqui reconstruimos el bite bit a bit
+        current_byte = (current_byte << 1) | bit
+        bit_count += 1
 
-    fin = bits.find(marker)
-    if fin == -1:
+        #Cuando el byte sea definitivo que se añada al mensaje final extraido
+        if bit_count == 8:
+            buffer.append(current_byte)
+            #Desde esta linea se empieza a buscar el marker final para saber si es hora de parar de buscar o seguir sacando
+            marker_buffer.append(current_byte)
+            if len(marker_buffer) > marker_len:
+                marker_buffer.pop(0)
+
+            current_byte = 0
+            bit_count = 0
+
+            if bytes(marker_buffer) == marker: #Una vez que vimos el marker se para el for
+                break
+
+    if len(buffer) < marker_len:
         raise ValueError("No se encontró mensaje")
 
-    bits = bits[:fin] #Aquí utilizamos slicing para quitar el marcador de final ya que no aporta ninguna parte del mensaje, que ahora intentaremos de desencriptar con la contraseña
+    #En esta linea le quitamos el marker al mensaje final
+    data = bytes(buffer[:-marker_len])
 
-    data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8)) #Esta linea reconstruira el mensaje, pero todavia cifrado
-
-    #Aquí intentaremos descomprimir el mensaje utilizando la contraseña 
     try:
         final_password = generate_password(user_password)
         fernet = Fernet(final_password)
@@ -145,5 +182,5 @@ def extract_message(sus_img, user_password):
     except InvalidToken:
         raise ValueError("Contraseña incorrecta o Imágen corrompida")
 
-    mensaje = zlib.decompress(mensaje_comprimido) 
+    mensaje = zlib.decompress(mensaje_comprimido)
     return mensaje.decode()
