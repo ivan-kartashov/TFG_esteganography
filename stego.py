@@ -46,7 +46,7 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
     pixels = img.load() #Esta si que es la linea que ahora sacara los datos de la imagen como los metadatos para que ahora trabajemos utilizandolos
 
     #Ahora comprimimos el mensaje proporcionado por el usuario para máximizar la cantidad de carácteres permisibles
-    compressed_message = zlib.compress(non_sus_message.encode(), level=9)
+    compressed_message = zlib.compress(non_sus_message.encode(), level=1)
 
     #Estas lineas encriptan la contraseña introducida por el usuario
     final_password = generate_password(user_password)
