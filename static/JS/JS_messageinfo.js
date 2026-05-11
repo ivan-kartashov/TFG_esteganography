@@ -1,8 +1,9 @@
-// Estas serán las variables donde guardaremos los valores de los campos html
+// Estas serán las variables donde guardaremos los valores de los campos html por su id en el documento .html
 const imagenInput = document.getElementById("imagenInput");
 const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
+
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -11,9 +12,9 @@ let maxChars = 0;
 imagenInput.addEventListener("change", function() {
     const file = this.files[0];
     const formData = new FormData();
-    formData.append("imagen", file);
+    formData.append("imagen", file); //Aquí el código pilla la imágen introducida por el usuario
 
-    fetch("/lengthofmessage", {
+    fetch("/lengthofmessage", { //Aquí pilla la ruta /lengthofmessage del servidor flask para conseguir el valor del return en este caso
         method: "POST",
         body: formData
     })
@@ -27,12 +28,13 @@ imagenInput.addEventListener("change", function() {
         // Esto para actualizar el contador que viene siguiente
         updateCharCounter();
     })
-    .catch(error => console.error("Error:", error));//Control de errores de consola
+    .catch(error => console.error("Error:", error));//Control de errores de consola, donde error es el error completo, los errores de JavaScript deberian salir en la terminal al hacer f11 en la web y mirarlo
 });
 
 //Esto es lo que "escucha" a que el usuario ponga input
 mensajeArea.addEventListener("input", updateCharCounter);
 
+//Esta es la función para actualizar la cantidad de carácteres restantes cada vez que el usuario 
 function updateCharCounter() {
     const longitud = mensajeArea.value.length;
 
@@ -51,8 +53,8 @@ function updateCharCounter() {
     }
 }
 
-//esta es la funcion que actua cuando se quita la imagen
-function quitarimgseleccionada() {
+//esta es la funcion que actua cuando se quita la imagen en el botón de quitado del html
+function quitarimgseleccionadahide() {
     document.getElementById("imagenInput").value = "";
     textCapacity.innerText = null;
     textRemaining.innerText = null;
@@ -61,6 +63,10 @@ function quitarimgseleccionada() {
     mensajeArea.value = null;
 }
 
+function quitarimgseleccionadaextract() {
+    document.getElementById("imagenInput").value = "";
+    textRemaining.getElementsByClassName("extracted_message").value = null;
+}
 
 
 
