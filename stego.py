@@ -3,9 +3,6 @@
 #Permitira reducir el tamaño de los archivos, en este caso los mensajes que meteremos en las imagenes
 import zlib 
 
-#Nos permitira reeemplazar los valores de bits completamente aleatorios, de esta manera siendo mucho más dificil de detectar
-#import random 
-
 #Aqui importamos los hashes para poder encriptar de una manera más segura
 import hashlib 
 
@@ -25,7 +22,7 @@ def generate_password(genpasswd):
     hash = hashlib.sha256(genpasswd.encode()).digest()
     return base64.urlsafe_b64encode(hash)
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"} #Extensiones de imágenes permitidas para ser subidas
 
 def allowed_file(filename):
     return (
@@ -37,7 +34,7 @@ def allowed_file(filename):
 #Esta es la funcion que escondera el mensaje, utilizando los bits menos significativos de cada canal rgb de cada pixel de la imágen
 def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
-    #Aqui trabajamos con la imágen
+    #Aqui trabajamos con la imágen, y si la imágen falla alguna de las pruebas le devovlemos al usuario que la imágen no es válida
     try:
         img = Image.open(soon_to_be_sus_img)
         img = img.convert("RGB")  

@@ -26,9 +26,9 @@ def escondinator():
 @app.route("/hide", methods=["POST"]) #Define una dirección nueva "/hide"
 def hide():
 
-    image = request.files["imagen"] #Aqui le pediremos al usuario que le meta la imagen 
+    image = request.files["imagen"] #Aqui le pediremos al usuario que le meta la imagen (esto esta entrelazado con las names del html) 
 
-    #A continuación le pediremos al usuario que introduzca los demás campos
+    #A continuación le pediremos al usuario que introduzca los demás campos (esto esta entrelazado con los name del html)
 
     message = request.form["mensaje"]
     password = request.form["password"]
@@ -38,7 +38,7 @@ def hide():
 
     unique_id = str(uuid.uuid4()) #Este tio hará que hayan identificadores únicos en los nombres de las imágenes para que no se lien en el testing...
     filename = secure_filename(image.filename) #Aqui utilizamos el secure filename para eliminar espacios y hacer que el nombre sea seguro para nuestro programa
-    #input guardara la imagen original en el fichero uploads y output guardara la nueva imágen con el mensaje oculto
+    #input guardara la imagen original en el fichero uploads y output guardara la nueva imágen con el mensaje oculto, utilizando el unique_id generado para cada imágen como identificador para que la app no se confunda de imagenes
     input = os.path.join(UPLOAD_FOLDER,f"{unique_id}_{filename}") 
     output = os.path.join(UPLOAD_FOLDER, f"{unique_id}_hidden.png")
 
@@ -55,6 +55,7 @@ def hide():
     return send_file(output, as_attachment=True)
 
 
+#Esta es la función que se encargara de calcular la capacidad mágica de la imágen, para poder mostrarselo al usuario y para tener las métricas de errores
 @app.route("/lengthofmessage", methods=["POST"])
 def lengthofmessage():
 
