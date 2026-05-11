@@ -103,6 +103,17 @@ function quitararchivoinput() {
     mensajeArea.value = null;
 }
 
+//Miramos si se metio algún archivo para calcular la cantidad de caracteres
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length > 0) { //Si no hay ningún archivo o se quita
+    textarea.disabled = true;
+    textWritten.innerText = null;
+    textRemaining.innerText = null;
+  } else { //
+    textarea.disabled = false;
+    updateCharCounter(); 
+  }
+});
 
 
 
