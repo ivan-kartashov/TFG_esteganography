@@ -143,7 +143,7 @@ def extract_message(sus_img, user_password):
         mensaje_comprimido = fernet.decrypt(data)
 
     except InvalidToken:
-        raise ValueError("Contraseña incorrecta o datos corruptos")
+        raise ValueError("Contraseña incorrecta o Imágen corrompida")
 
     mensaje = zlib.decompress(mensaje_comprimido) 
     return mensaje.decode()
