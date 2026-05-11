@@ -3,7 +3,7 @@ const imagenInput = document.getElementById("imagenInput");
 const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
-
+const textWritten = document.getElementById("TextWritten");
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -41,9 +41,13 @@ function updateCharCounter() {
     // Por si no hay imágen guardada:
     if (maxChars === 0 && longitud === 0) return;
 
+    const written = longitud;
     const remaining = maxChars - longitud;
 
+    textWritten.innerText = "Carácteres escritos" + written;
     textRemaining.innerText = "Carácteres restantes: " + remaining;
+
+
 
     //Aqui le mostraremos el usuario la cantidad de restantes en rojo si ha superado el 20% de la capacidad total de la imágen, esto se debe a que podria inflar el tamaño de la imágen/reducir su calidad muy notablemente
     if (remaining < (maxChars*0.8)) {
