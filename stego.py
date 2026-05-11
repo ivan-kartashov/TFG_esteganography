@@ -55,36 +55,57 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
     #En esta línea encriptamos el mensaje comprimido con la contraseña final barajeada y encriptada
     mensaje_cifrado = fernet.encrypt(compressed_message) 
 
-    #Aquí lo pasamos todo al formato binario
-    binary = ''.join(format(b, '08b') for b in mensaje_cifrado)
-    binary += '1111111111111110' #En esta línea le indicamos que el marcador final es esta secuencia, o sea, aquí termina el mensaje
+    marker = '1111111111111110'#En esta línea le indicamos que el marcador final es esta secuencia, o sea, aquí termina el mensaje
 
     #Esta linea calcula el tamaño de la imágen y luego calcula el total de las posiciones totales
     width, height = img.size
     total_positions = width * height * 3
+    total_bits = (len(mensaje_cifrado) * 8) + len(marker)
 
     #Aqui hacemos un raise si el mensaje del usuario es demasiado grande
-    if len(binary) > total_positions:
+    if total_bits > total_positions:
         raise ValueError("Mensaje demasiado grande")
 
-    #Aquí creamos una "semilla" a partir de la contraseña encriptada para generar una secuencia pseudoaleatoria apartir de esta "seed"
+    #Aquí creamos una "semilla" de secuencias pseudoaleatorias a partir de la contraseña encriptada para generar una secuencia pseudoaleatoria apartir de esta "seed"
     seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
-    a = (seed | 1) 
+    a = (seed | 1)
     b = seed % total_positions
 
-    #Aquí usaremos nuestra seed para detectar cada posición y sobreescribir el bit menos significativo de canal rgb de cada pixel
-    for i, bit in enumerate(binary):
-        idx = (a * i + b) % total_positions #Está es la secuencia que ahora dependera de la "seed" creada antes, aquí se hace la indexación pseudoaleatoria de los bits
+    bit_index = 0
 
-        #En estas lineas convertimos el idx en posiciones exáctas como (x, y) para posiciones de píxeles y (R=0,G=0,B=0) para los canales RGB de los píxeles
+    #Aquí usaremos nuestra seed para detectar cada posición y sobreescribir el bit menos significativo de canal rgb de cada pixel, en este caso procesando byte por byte
+    for byte in mensaje_cifrado:
+        for eachbit in range(8): #O sea, por cada bit
+
+            bit = (byte >> (7 - eachbit)) & 1
+
+            idx = (a * bit_index + b) % total_positions #Está es la secuencia que ahora dependera de la "seed" creada antes, aquí se hace la indexación pseudoaleatoria de los bits
+            #En estas lineas convertimos el idx en posiciones exáctas como (x, y) para posiciones de píxeles y (R=0,G=0,B=0) para los canales RGB de los píxeles
+            pixel_index = idx // 3
+            c = idx % 3
+            x = pixel_index % width
+            y = pixel_index // width
+
+            rgb = list(pixels[x, y]) #Posiciones de píxeles
+            rgb[c] = (rgb[c] & ~1) | bit #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
+            pixels[x, y] = tuple(rgb)
+
+            bit_index += 1
+
+    #Ahora se añade el final de la escribientura con el marcador de final, utilizando la misma lógica del for anterior
+    for bit in marker:
+        idx = (a * bit_index + b) % total_positions 
+        
         pixel_index = idx // 3
         c = idx % 3
         x = pixel_index % width
         y = pixel_index // width
 
-        rgb = list(pixels[x, y]) #Posiciones de píxeles
-        rgb[c] = (rgb[c] & ~1) | int(bit) #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
+        rgb = list(pixels[x, y]) 
+        rgb[c] = (rgb[c] & ~1) | int(bit) 
         pixels[x, y] = tuple(rgb)
+
+        bit_index += 1
 
     img.save(img_sus) #Guardamos la imágen con información escondida
 
