@@ -4,7 +4,6 @@ const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
 const textWritten = document.getElementById("TextWritten");
-const messagefile = document.getElementById("messagefile");
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -42,10 +41,10 @@ function updateCharCounter() {
     // Por si no hay imágen guardada:
     if (maxChars === 0 && longitud === 0) return;
 
-    const written = longitud;
+    const written = longitud - 1;
     const remaining = maxChars - longitud;
 
-    textWritten.innerText = "Carácteres escritos" + written;
+    textWritten.innerText = "Carácteres escritos: " + written;
     textRemaining.innerText = "Carácteres restantes: " + remaining;
 
 
