@@ -64,7 +64,6 @@ function quitarimgseleccionadahide() {
     textCapacity.innerText = null;
     textRemaining.innerText = null;
     textRemaining.style.color = "black";
-    document.getElementById("messagefile").value = "";
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
 }
@@ -95,7 +94,14 @@ fileInput.addEventListener("change", () => {
   }
 });
 
-
+function quitararchivoinput() {
+    document.getElementById("messagefile").value = "";
+    textCapacity.innerText = null;
+    textRemaining.innerText = null;
+    textRemaining.style.color = "black";
+    mensajeArea.maxLength = null;
+    mensajeArea.value = null;
+}
 
 
 
