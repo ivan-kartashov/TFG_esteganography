@@ -41,8 +41,8 @@ function updateCharCounter() {
     // Por si no hay imágen guardada:
     if (maxChars === 0 && longitud === 0) return;
 
-    const written = longitud - 1;
-    const remaining = (maxChars - longitud) + 1;
+    const written = longitud;
+    const remaining = maxChars - longitud;
 
     textWritten.innerText = "Carácteres escritos: " + written;
     textRemaining.innerText = "Carácteres restantes: " + remaining;

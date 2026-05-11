@@ -1,14 +1,16 @@
-from flask import Flask, render_template, request, send_file #flask es el que se encargara de levantar la web, render_template permite 
+from flask import Flask, render_template, request, send_file, after_this_request #flask es el que se encargara de levantar la web, render_template permite 
 #cargarar archivos html, request nos permitira que el usuario interactue con el codigo a través de la interfaz y send_file permite que 
 #el codigo le envie datos descargables al usuario
+#Además, gracias a after_this_request podremos borrar los archivos creados en el servidor despúes de ejecutar todo el codigo necesario del usuario
 import os #Permitira meternos en el sistema de archivos para sacar las imagenes
 import uuid #Lo necesitamos para que no se vuelva a sobreescribir en la misma imágen, que me estaba pasando durante el testing del nuevo código optimizado
 from stego import hide_message, extract_message, allowed_file
 from werkzeug.utils import secure_filename #Asegura que los nombres de las imagenes no sean problematicos
+from PIL import Image
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
-app.config["MAX_CONTENT_LENGTH"] = 999 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
+app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")#Dice el nombre de la carpeta en la que se guadaran las imagenes y asegura que esta esté
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
 
@@ -57,27 +59,44 @@ def hide():
         print("ERROR REAL:", e)
         return f"Error al ocultar el mensaje: {str(e)}" #Salimos del programa si hay un error en la lógica en si, no en los archivos
 
-    return send_file(output, as_attachment=True)
+    #Esto se ejecutara justo después de retornar la imágen al usuario, en este caso lo utilizaremos para borrar los archivos de las imagenes justo después de devovolverselas al usuario para que no se guarden en el servidor de render/equipo
+    @after_this_request
+    def remove_files(response):
+        try:
+            if os.path.exists(input):
+                os.remove(input)
 
+            if os.path.exists(output):
+                os.remove(output)
+
+        except Exception as e:
+            print("Error borrando archivos:", e)
+
+        return response
+
+    return send_file(output, as_attachment=True)
 
 #Esta es la función que se encargara de calcular la capacidad mágica de la imágen, para poder mostrarselo al usuario y para tener las métricas de errores
 @app.route("/lengthofmessage", methods=["POST"])
 def lengthofmessage():
 
-    #Las siguientes tres lineas le piden al usuario que seleccione una imagen y a continuación calcularemos su capacidad
-    img = request.files["imagen"]
+    #La siguientes linea le pedira al usuario que seleccione una imagen y a continuación calcularemos su capacidad
+    img_file = request.files["imagen"]
 
-    path = os.path.join(UPLOAD_FOLDER, img.filename)
-    img.save(path)
+    try:
+        img = Image.open(img_file)
+        width, height = img.size
 
-    from PIL import Image
-    img = Image.open(path)
-    width, height = img.size
+        capacidad_bits = width * height * 3 #Esta es la formula que tengo explicada en el .txt
+        max_chars = (capacidad_bits - 16) // 8 #Esto es la formula de capacidad final, también explicada en el .txt bajo el nombre "Ivan"
 
-    capacidad_bits = width * height * 3 #Esta es la formula que tengo explicada en el .txt
-    max_chars = (capacidad_bits - 16) // 8 #Esto es la formula de capacidad final, también explicada en el .txt bajo el nombre "Ivan"
+        return str(max_chars)
 
-    return str(max_chars)
+    except Exception as e:
+        print("ERROR:", e)
+        return "0"
+
+
 
 #Esta ruta de nuestra app permitira extraer los mensajes ocultos que se escondieron en las imagenes (Creo que si son solo mediante esta aplicación)
 @app.route("/extract", methods=["POST"]) 
@@ -93,6 +112,14 @@ def extraer():
         message = extract_message(path, password)
     except:
         message = "Error: contraseña incorrecta/Imagen Sin mensaje"
+
+    #Aquí intentamos eliminar la imágen de la extracción cuando se extraiga el mensaje
+    try:
+        if os.path.exists(path):
+            os.remove(path)
+
+    except Exception as e:
+        print("Error borrando archivo:", e)
 
     return render_template("escondinator.html", mensaje_extraido=message)
 
