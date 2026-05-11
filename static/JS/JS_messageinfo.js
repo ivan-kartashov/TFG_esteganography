@@ -42,7 +42,7 @@ function updateCharCounter() {
     if (maxChars === 0 && longitud === 0) return;
 
     const written = longitud - 1;
-    const remaining = maxChars - longitud;
+    const remaining = (maxChars - longitud) + 1;
 
     textWritten.innerText = "Carácteres escritos: " + written;
     textRemaining.innerText = "Carácteres restantes: " + remaining;
@@ -65,6 +65,7 @@ function quitarimgseleccionadahide() {
     textRemaining.style.color = "black";
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
+    textWritten.innerText = null;
 }
 
 function quitarimgseleccionadaextract() {
@@ -83,7 +84,7 @@ function quitarimgseleccionadaextract() {
 
 //Código para detectar si el usuario escribe en el campo de mensaje o si elige el metodo del archivo
 const textarea = document.querySelector("textarea");
-const fileInput = document.querySelector("input[type=file]");
+const fileInput = document.getElementById("messagefile");
 //Escuchamos los cambios de si es archivo o texto, y dependiendo de lo que sea le desactivamos el textarea o lo dejamos activo
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length > 0) {
