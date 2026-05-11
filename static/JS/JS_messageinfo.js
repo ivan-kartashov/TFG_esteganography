@@ -4,6 +4,7 @@ const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
 const textWritten = document.getElementById("TextWritten");
+const messagefile = document.getElementById("messagefile");
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -63,6 +64,7 @@ function quitarimgseleccionadahide() {
     textCapacity.innerText = null;
     textRemaining.innerText = null;
     textRemaining.style.color = "black";
+    document.getElementById("messagefile").value = "";
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
 }
@@ -81,6 +83,17 @@ function quitarimgseleccionadaextract() {
     }
 }
 
+//Código para detectar si el usuario escribe en el campo de mensaje o si elige el metodo del archivo
+const textarea = document.querySelector("textarea");
+const fileInput = document.querySelector("input[type=file]");
+//Escuchamos los cambios de si es archivo o texto, y dependiendo de lo que sea le desactivamos el textarea o lo dejamos activo
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length > 0) {
+    textarea.disabled = true;
+  } else {
+    textarea.disabled = false;
+  }
+});
 
 
 

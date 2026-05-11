@@ -29,8 +29,13 @@ def hide():
     image = request.files["imagen"] #Aqui le pediremos al usuario que le meta la imagen (esto esta entrelazado con las names del html) 
 
     #A continuación le pediremos al usuario que introduzca los demás campos (esto esta entrelazado con los name del html)
+    #En el campo de mensaje le bloquearemos la opción de escribir manualmente si selecciona archivo, además si no hay archivo seleccionado permitiremos escribir (esto en javascript)
+    if "file_message" in request.files and request.files["file_message"].filename != "":
+        message_file = request.files["file_message"]
+        message = message_file.read().decode()
+    else:
+        message = request.form["mensaje"]
 
-    message = request.form["mensaje"]
     password = request.form["password"]
 
     if not allowed_file(image.filename):
