@@ -1,6 +1,6 @@
 services:
-  -type: web
-  name: escondinator
-  env: python
-  buildCommand: pip install -r ./Requirements.txt
-  startCimmand: gunicorn app:app --timeout 300
+  - type: web
+    name: escondinator
+    env: python
+    buildCommand: pip install -r ./Requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 4 --timeout 300
