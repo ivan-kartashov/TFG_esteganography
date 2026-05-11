@@ -64,7 +64,7 @@ function quitarimgseleccionadahide() {
 }
 
 function quitarimgseleccionadaextract() {
-    document.getElementById("imagenInput").value = "";
+    document.getElementById("imagenInputExt").value = "";
     textCapacity.innerText = null;
     textRemaining.innerText = null;
     textRemaining.style.color = "black";
