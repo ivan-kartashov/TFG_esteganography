@@ -65,7 +65,12 @@ function quitarimgseleccionadahide() {
 
 function quitarimgseleccionadaextract() {
     document.getElementById("imagenInput").value = "";
-    textRemaining.getElementsByClassName("extracted_message").value = null;
+    textCapacity.innerText = null;
+    textRemaining.innerText = null;
+    textRemaining.style.color = "black";
+    mensajeArea.maxLength = null;
+    mensajeArea.value = null;
+    textRemaining.innerText.getElementsByClassName("extracted_message") = null;
 }
 
 
