@@ -150,3 +150,5 @@ pero entonces tendriamos que mirarlo.
 - Además la nueva estructura usa AUN MÁS javascript así que pido que todos reviseis el codigo para entenderlo, además tenemos el jsonify para que los errores devueltos se capten correctamente en el js sin ser captados como errores de consola rarisimos.
 
 - Añadí un limite de caracteres a la contraseña.
+
+- Ahora, en vez de crear tuplas para guardar los bits sobreescritos los sobreescribiremos directamente (ver comentarios).
