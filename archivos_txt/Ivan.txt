@@ -111,4 +111,33 @@ pero entonces tendriamos que mirarlo.
 
 - Modificada la documentación.
 
+11/05/2026
+
+- He cambiado una excepción en stego.py para mejorar la lectura de errores.
+
+- En app.py y stego.py añadidas funcionalidades y comentarios nuevos.
+
+- Añadido un botón de quitar selección en extraer y más comentarios en js y python.
+
+- Añadido contador de carácteres escritos.
+
+- Añadida la opción de seleccionar un archivo de texto como origen de mensaje (permite mensajes de muy alto tamaño, y si hay patrones claros de texto la encriptación se realizará con aún más eficiencia).
+
+- Añadido el botón de eliminar seleccionado en archivo de texto, además de bloquear la caja de texto al introducir un archivo y eliminada la vista de carácteres restantes e escritos.
+
+- Añadido el eliminado automatico de imagenes guardadas para que no saturen el servidor.
+
+- Añadido render.yaml para instrucciones más exactas para render.
+
+- Cambiado el nivel de compresión al más rápido posible, aunque ahora infla los archivos es más rápido (podriamos añadir la opción de que el usuario pueda seleccionar el nível de compresión que desee).
+
+- En hide_message ahora recorremos todo bit a bit para mejorar la integridad y la optimización del código, en extract_message trabajaremos con bytes en vez de bits para que la lectura sea más rápida.
+
+- Añadida nueva lógica de precalculación de posiciones disponibles para mejorar el rendimiento y el limite de mensajes dicho al usuario ahora es menor (le restamos un buffer por si acaso para que el usuario no pierda información).
+
+12/05/2026
+
+- Nueva optimización del código que además de mejorar su rendimiento mejora la integridad matemática, no se crea lista inecesaria, no se repiten las posiciones mientras se siguen recorriendo todas (más información en el comentario del código). 
+
 - 
+
