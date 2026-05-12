@@ -2,19 +2,18 @@
 #Aqui importamos las librerias necesarias 
 #Permitira reducir el tamaño de los archivos, en este caso los mensajes que meteremos en las imagenes
 import zlib 
-
 #Aqui importamos los hashes para poder encriptar de una manera más segura
 import hashlib 
-
 #Permitira traducir bytes y bits a formato de texto y viceversa
 import base64 
-
 #Permitira abrir, sacar los datos de la imagen, y trabajar con las imagenes
 from PIL import Image 
-
 #Permitira implementar cifrado simétrico para nuestra contraseña que utilizaremos para desbloquear los mensajes
 from cryptography.fernet import Fernet, InvalidToken
-
+#Lo he vuelto a meter para hacer un shuffle y garantizar consistencia e integridad porque antes sobreescribia posicones y se perdia información
+import random 
+#La libreria math la utilizaremos para luego calcular la integridad de las posiciones para no escribirlas otra vez
+import math
 #Esta función convertira la contraseña introducida en un formato de hash
 #para que no se pueda sacar el mensaje sin tener la contraseña, ya que el hashing ayudara bastante con la seguridad
 def generate_password(genpasswd):
@@ -68,10 +67,14 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     #Aquí creamos una "semilla" de secuencias pseudoaleatorias a partir de la contraseña encriptada para generar una secuencia pseudoaleatoria apartir de esta "seed"
     seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
-    a = (seed | 1)
+    #Nos hacemos seguros de que a sea impar y también de que sea coprimo de total_positions para que no hayan colisiones
+    a = (seed | 1) % total_positions
+    while math.gcd(a, total_positions) != 1: #Aqui gcd (greatest common divisor es el máximo común divisor, y en ese caso queremos que sea 1 para garantizar la integridad)
+        a = (a + 2) % total_positions  
     b = seed % total_positions
 
-    #Aqui se realiza el precalculo de todas las posiciones para no tener que cambiar toda la imagen.
+
+    #Aqui se realiza el precalculo de todas las posiciones para no tener que recorrer toda la imagen.
     positions = []
     for i in range(total_bits):
         idx = (a * i + b) % total_positions
@@ -122,8 +125,11 @@ def extract_message(sus_img, user_password):
     width, height = img.size
     total_positions = width * height * 3
 
+    #Esto tiene el mismo funcionamiento y garantiza lo mismo que el código mismo en hide_message
     seed = int(hashlib.sha256(user_password.encode()).hexdigest(), 16)
-    a = (seed | 1)
+    a = (seed | 1) % total_positions
+    while math.gcd(a, total_positions) != 1:
+        a = (a + 2) % total_positions
     b = seed % total_positions
 
     #Ahora pondremos el marcador en formato de bytes, para que sea más eficiente en la memoria
