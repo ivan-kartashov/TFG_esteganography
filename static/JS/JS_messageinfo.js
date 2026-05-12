@@ -11,11 +11,12 @@ const password = document.getElementById("passwordEncode")
 let maxChars = 0;
 
 //Comprobaremos que la contraseña no sea mayor que 250 carácteres
-if (password.value.length > 250) {
-    alert("Máximo 250 caracteres, no sobrepase el límite");
-    return;
-}
-
+password.addEventListener("input", () => {
+    if (password.value.length > 250) {
+        alert("Máximo 250 caracteres");
+        password.value = password.value.slice(0, 250);
+    }
+});
 
 //Aquí apuntamos lo que sucede cuando cambiamos/ponemos imágen
 imagenInput.addEventListener("change", function() {
@@ -32,7 +33,7 @@ imagenInput.addEventListener("change", function() {
         // Guardamos el numero de las posiciones disponibles totales y las mostramos, ademas de limitar el número de carácteres al usuario en el textarea
         maxChars = parseInt(data); 
         textCapacity.innerText = "Número máximo de carácteres: " + maxChars;
-        mensajeInput.maxLength = maxChars;
+        mensajeArea.maxLength = maxChars;
         
         // Esto para actualizar el contador que viene siguiente
         updateCharCounter();

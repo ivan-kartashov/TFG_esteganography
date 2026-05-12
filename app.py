@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, jsonify #flask es el que se encargara de levantar la web, render_template permite 
+from flask import Flask, render_template, request, send_file, jsonify, after_this_request #flask es el que se encargara de levantar la web, render_template permite 
 #cargarar archivos html, request nos permitira que el usuario interactue con el codigo a través de la interfaz y send_file permite que 
 #el codigo le envie datos descargables al usuario
 #Además, gracias a after_this_request podremos borrar los archivos creados en el servidor despúes de ejecutar todo el codigo necesario del usuario
@@ -46,10 +46,10 @@ def hide():
     password = request.form["password"]
 
     if len(password) > 250:
-        return "Contraseña demasiado grande, máximo 250 carácteres"
+        return jsonify("Contraseña demasiado grande, máximo 250 carácteres")
     
     if not allowed_file(image.filename):
-        return "Formato no permitido"
+        return jsonify("Formato no permitido")
 
     unique_id = str(uuid.uuid4()) #Este tio hará que hayan identificadores únicos en los nombres de las imágenes para que no se lien en el testing...
     filename = secure_filename(image.filename) #Aqui utilizamos el secure filename para eliminar espacios y hacer que el nombre sea seguro para nuestro programa
@@ -61,10 +61,10 @@ def hide():
     #Ahora la imagen se guarda físicamente, es decir, sin esto solamente se guardaria en la RAM y llamamos a la función final
     image.save(input)
 
-    #CREAMOS EL ESTADO DE LA TAREA PARA PODER CONSULTAR SU PROGRESO DESDE EL FRONTEND
+    #Aqui creamos el estado del proceso para depuración
     tasks[unique_id] = {"status": "processing"}
 
-    #DEFINIMOS LA FUNCION QUE SE EJECUTARA EN SEGUNDO PLANO PARA EVITAR BLOQUEAR EL SERVIDOR
+    #Esta función se ejecutara en segundo plano para no saturar el servidor del proceso si es potente
     def background_task():
         try:
             hide_message(input, output, message, password)
@@ -81,7 +81,7 @@ def hide():
             print("ERROR REAL:", e)
             tasks[unique_id]["status"] = f"error: {str(e)}"
 
-        #BORRAMOS LOS ARCHIVOS PARA NO LLENAR EL DISCO EN RENDER (SE HACE AL FINAL DEL PROCESO ASINCRONO)
+        #Aqui borraremos los archivos después de crearlos para prevenir llenar el servidor de basura (solo el input en esta linea)
         try:
             if os.path.exists(input):
                 os.remove(input)
@@ -145,7 +145,6 @@ def extraer():
 #Aquí comprobamos el estado del task devolviendo su id para nuestro javascript
 @app.route("/status/<task_id>")
 def status(task_id):
-
     if task_id not in tasks: #Si no hay task, entonces tampoco hay id de la task GAHOOK
         return jsonify({"status": "not_found"})
 
@@ -154,13 +153,18 @@ def status(task_id):
 #La ruta que de la app que utiliza JS para descargar el archivp
 @app.route("/download/<task_id>")
 def download(task_id):
-
     path = os.path.join(UPLOAD_FOLDER, f"{task_id}_hidden.png")
 
-    if os.path.exists(path): #Si el archivo se genero correctamente en /hide
+    if os.path.exists(path):#Si el archivo se genero correctamente en /hide
+        @after_this_request
+        def remove_file(response):
+            try:
+                os.remove(path)
+            except Exception as e:
+                print("Error borrando output:", e)
+            return response
         return send_file(path, as_attachment=True)
-
-    return jsonify("Archivo no listo") #Esto si no se genero o todavia no hay archivo
+    return jsonify("Archivo no listo/Nunca existio") #Esto si no se genero o todavia no hay archivo
 
 #Comprueba si el archivo se ejecuta directamente
 if __name__ == "__main__": 

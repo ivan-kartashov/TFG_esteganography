@@ -152,3 +152,5 @@ pero entonces tendriamos que mirarlo.
 - Añadí un limite de caracteres a la contraseña.
 
 - Ahora, en vez de crear tuplas para guardar los bits sobreescritos los sobreescribiremos directamente (ver comentarios).
+
+- Arreglados varios cambios que producian errores en js, python y la lógica en si.
