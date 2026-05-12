@@ -45,6 +45,9 @@ def hide():
 
     password = request.form["password"]
 
+    if len(password) > 250:
+        return "Contraseña demasiado grande, máximo 250 carácteres"
+    
     if not allowed_file(image.filename):
         return "Formato no permitido"
 

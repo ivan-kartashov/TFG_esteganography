@@ -5,9 +5,17 @@ const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
 const textWritten = document.getElementById("TextWritten");
 const scripthideForm = document.getElementById("hideForm")
+const password = document.getElementById("passwordEncode")
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
+
+//Comprobaremos que la contraseña no sea mayor que 250 carácteres
+if (password.value.length > 250) {
+    alert("Máximo 250 caracteres, no sobrepase el límite");
+    return;
+}
+
 
 //Aquí apuntamos lo que sucede cuando cambiamos/ponemos imágen
 imagenInput.addEventListener("change", function() {
