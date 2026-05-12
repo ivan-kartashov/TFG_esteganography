@@ -92,7 +92,12 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
             bit = (byte >> (7 - eachbit)) & 1
 
-            x, y, c = positions[bit_index]
+            #Usando el maximo comun divisor podremos detectar posiciones sin guardarlas en listas, lo que permite ahorrar RAM y optimizar el programa
+            idx = (a * bit_index + b) % total_positions
+            pixel_index = idx // 3
+            c = idx % 3
+            x = pixel_index % width
+            y = pixel_index // width
 
             rgb = list(pixels[x, y]) #Posiciones de píxeles
             rgb[c] = (rgb[c] & ~1) | bit #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
@@ -142,8 +147,10 @@ def extract_message(sus_img, user_password):
 
     marker_buffer = bytearray() #Asegura que se guarden los ultimos bits para el marcador final
 
+
     for i in range(total_positions):
 
+        # CALCULO DIRECTO DE POSICION USANDO LCG COPRIMO PARA EVITAR COLISIONES Y GARANTIZAR MISMO ORDEN
         idx = (a * i + b) % total_positions #Calculamos la posicion pseudoaleatoria y desde aqui el código es casi identico a /hide, con algunas excepciones
 
         pixel_index = idx // 3

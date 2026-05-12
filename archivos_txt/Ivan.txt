@@ -139,5 +139,5 @@ pero entonces tendriamos que mirarlo.
 
 - Nueva optimización del código que además de mejorar su rendimiento mejora la integridad matemática, no se crea lista inecesaria, no se repiten las posiciones mientras se siguen recorriendo todas (más información en el comentario del código). 
 
-- 
+- Elimine las listas de posiciones, utilizando la nueva optimización como un palo de andar para permitir que no haga falta guardar las listas de bits, para ahorrar mucha RAM  y permitir funcionamiento con mejor optimización.
 
