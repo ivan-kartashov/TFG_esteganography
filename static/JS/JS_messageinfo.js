@@ -4,8 +4,10 @@ const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
 const textWritten = document.getElementById("TextWritten");
-const scripthideForm = document.getElementById("hideForm")
-const password = document.getElementById("passwordEncode")
+const scripthideForm = document.getElementById("hideForm");
+const password = document.getElementById("passwordEncode");
+const previewHide = document.getElementById("soonsus");
+const previewExtract = document.getElementById("toextra/ct");
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -154,6 +156,7 @@ function quitararchivoinput() {
     textRemaining.style.color = "black";
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
+    textarea.disabled = false;
 }
 
 //Miramos si se metio algún archivo para calcular la cantidad de caracteres

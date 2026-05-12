@@ -107,10 +107,10 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
     #Ahora se añade el final de la escribientura con el marcador de final, utilizando la misma lógica del for anterior
     for bit in marker:
         idx = (a * bit_index + b) % total_positions
-        pixels = idx // 3
+        pixel_index = idx // 3
         c = idx % 3
-        x = pixels % width
-        y = pixels // width  
+        x = pixel_index % width
+        y = pixel_index // width  
         red, green, blue = pixels[x, y] 
         if c == 0:
             red = (red & ~1) | int(bit) 

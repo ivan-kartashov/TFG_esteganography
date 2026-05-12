@@ -45,3 +45,15 @@ header {
 footer {
     background-color: skyblue;
 }
+
+#soonsus {
+    width: 20vh;
+    margin-top:10px; 
+    border-radius: 8px;
+}
+
+#toextract {
+    width: 40vh;
+    margin-top: 10px;
+    border-radius: 8px;
+}
