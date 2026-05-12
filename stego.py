@@ -73,17 +73,6 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
         a = (a + 2) % total_positions  
     b = seed % total_positions
 
-
-    #Aqui se realiza el precalculo de todas las posiciones para no tener que recorrer toda la imagen.
-    positions = []
-    for i in range(total_bits):
-        idx = (a * i + b) % total_positions
-        pixel_index = idx // 3
-        c = idx % 3
-        x = pixel_index % width
-        y = pixel_index // width
-        positions.append((x, y, c))
-
     bit_index = 0
 
     #Aquí usaremos nuestra seed para detectar cada posición y sobreescribir el bit menos significativo de canal rgb de cada pixel, en este caso procesando byte por byte
@@ -107,13 +96,14 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     #Ahora se añade el final de la escribientura con el marcador de final, utilizando la misma lógica del for anterior
     for bit in marker:
-
-        x, y, c = positions[bit_index]
-
+        idx = (a * bit_index + b) % total_positions
+        pixel_index = idx // 3
+        c = idx % 3
+        x = pixel_index % width
+        y = pixel_index // width
         rgb = list(pixels[x, y]) 
         rgb[c] = (rgb[c] & ~1) | int(bit) 
         pixels[x, y] = tuple(rgb)
-
         bit_index += 1
 
     img.save(img_sus) #Guardamos la imágen con información escondida

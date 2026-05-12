@@ -141,3 +141,4 @@ pero entonces tendriamos que mirarlo.
 
 - Elimine las listas de posiciones, utilizando la nueva optimización como un palo de andar para permitir que no haga falta guardar las listas de bits, para ahorrar mucha RAM  y permitir funcionamiento con mejor optimización.
 
+- Emm tuve que eliminar las listas de posiciones ahora si, antes solamente pare de usarlas no de generarlas, por lo cual ahora si, el marcador final también tendra que respetar la formula de mcd, esto también tiene en cuenta de que ahora no hay precalculo de posiciones implementado anteriormente.
