@@ -154,3 +154,5 @@ pero entonces tendriamos que mirarlo.
 - Ahora, en vez de crear tuplas para guardar los bits sobreescritos los sobreescribiremos directamente (ver comentarios).
 
 - Arreglados varios cambios que producian errores en js, python y la lógica en si.
+
+- Añadida la previsualización de las imágenes y reorganizado el docuemento JS.
