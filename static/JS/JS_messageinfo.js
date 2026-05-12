@@ -4,6 +4,7 @@ const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
 const textWritten = document.getElementById("TextWritten");
+const scripthideForm = document.getElementById("hideForm")
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -56,6 +57,49 @@ function updateCharCounter() {
         textRemaining.style.color = "black";
     }
 }
+
+//Aqui esperamos que alguien haga submit al formulario de esconder información
+scripthideForm.addEventListener("submit", function (outcome) {
+    outcome.preventDefault(); //Esto evita que se envie de la manera predeterminada
+
+    const formData = new FormData(scripthideForm);
+
+    fetch("/hide", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        const taskId = data.task_id;
+
+        //Indicamos al usuario que la imágen se está procesando está procesando
+        document.getElementById("processingUnit").innerText = "Escondiendo información... Buscando insectos... Buscando em... pues buscando... emmm...";
+
+        //Polling (Que es como la intensidad de actualización, aqui es cada 2 segundos)
+        const updateinfo = setInterval(() => {
+            //Aquí busca el json con el proceso de segundo plano para mirar su estado y devolver respuesta dependiendo del estado
+            fetch(`/status/${taskId}`)
+            .then(res => res.json()) //Cuando la respuesta se reciba que lo convertiamos a json
+            .then(status => { //Esto ya es cuando los datos son json y podemos procesarlos correctamente
+                console.log("El estado del proceso es este ahora mismo:", status);
+                if (status.status === "done") { //Una vez se termine el proceso esto >>>
+                    clearInterval(updateinfo);
+
+                    document.getElementById("processingUnit").innerText = "Imágen normal inconspiciosa preparada para la descarga inocente *guiño guiño*";
+                    
+                    //Aquí hacemos una descarga automática cuando el estado dice "done", utilizamos los datos del json que sacamos antes que se genera en app.py
+                    window.location.href = `/download/${taskId}`;
+                }
+                if (status.status.startsWith("error")) { //En caso de error mostramos esto
+                    clearInterval(updateinfo);
+                    alert("Critico: " + status.status);
+                    document.getElementById("processingUnit").innerText = "Aibaaaa errorrrrr";
+                }
+            });
+        }, 2000); //Esa es la intensidad de la actualización, en este caso son 2 segundos
+    });
+});
 
 //esta es la funcion que actua cuando se quita la imagen en el botón de quitado del html
 function quitarimgseleccionadahide() {
@@ -114,46 +158,3 @@ fileInput.addEventListener("change", () => {
     updateCharCounter(); 
   }
 });
-
-
-
-
-
-
-
-// document.getElementById("imagenInput").addEventListener("change", function() {
-//     const file = this.files[0];
-//     const formData = new FormData();
-//     formData.append("imagen", file);
-
-//     fetch("/lengthofmessage", {
-//         method: "POST",
-//         body: formData
-//     })
-//     .then(response => {
-//         console.log("Respuesta:", response);
-//         return response.text();
-//     })
-//     .then(data => {
-//         console.log("Data:", data);
-//         document.getElementById("TextCapacity").innerText =
-//             "Máx Char: " + data;
-//     });
-// });
-
-
-//         mensaje.addEventListener("input", updateCharCounter);
-
-// function updateCharCounter() {
-//     const longitud = mensaje.value.length;
-//     const remaining = getElementById("TextCapacity") - longitud;
-
-//     document.getElementById("TextRemaining").innerText =
-//         "Char. Remaining: " + remaining;
-
-//     if (remaining < 0) {
-//         document.getElementById("TextRemaining").style.color = "red";
-//     } else {
-//         document.getElementById("TextRemaining").style.color = "black";
-//     }
-// }

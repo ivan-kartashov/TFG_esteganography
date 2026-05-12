@@ -1,12 +1,15 @@
-from flask import Flask, render_template, request, send_file, after_this_request #flask es el que se encargara de levantar la web, render_template permite 
+from flask import Flask, render_template, request, send_file, jsonify #flask es el que se encargara de levantar la web, render_template permite 
 #cargarar archivos html, request nos permitira que el usuario interactue con el codigo a través de la interfaz y send_file permite que 
 #el codigo le envie datos descargables al usuario
 #Además, gracias a after_this_request podremos borrar los archivos creados en el servidor despúes de ejecutar todo el codigo necesario del usuario
 import os #Permitira meternos en el sistema de archivos para sacar las imagenes
 import uuid #Lo necesitamos para que no se vuelva a sobreescribir en la misma imágen, que me estaba pasando durante el testing del nuevo código optimizado
+import threading #Importamos threading para crear 
 from stego import hide_message, extract_message, allowed_file
 from werkzeug.utils import secure_filename #Asegura que los nombres de las imagenes no sean problematicos
 from PIL import Image
+
+tasks = {} #Son las "tareas" del background, esto nos ayuda implementar un sistema asíncrona en el sistema para permitir que la web no cuelgue en render
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
@@ -24,6 +27,7 @@ def index():
 @app.route("/escondinator")
 def escondinator():
     return render_template("escondinator.html")
+
 
 @app.route("/hide", methods=["POST"]) #Define una dirección nueva "/hide"
 def hide():
@@ -45,36 +49,47 @@ def hide():
 
     unique_id = str(uuid.uuid4()) #Este tio hará que hayan identificadores únicos en los nombres de las imágenes para que no se lien en el testing...
     filename = secure_filename(image.filename) #Aqui utilizamos el secure filename para eliminar espacios y hacer que el nombre sea seguro para nuestro programa
+    
     #input guardara la imagen original en el fichero uploads y output guardara la nueva imágen con el mensaje oculto, utilizando el unique_id generado para cada imágen como identificador para que la app no se confunda de imagenes
     input = os.path.join(UPLOAD_FOLDER,f"{unique_id}_{filename}") 
     output = os.path.join(UPLOAD_FOLDER, f"{unique_id}_hidden.png")
 
     #Ahora la imagen se guarda físicamente, es decir, sin esto solamente se guardaria en la RAM y llamamos a la función final
     image.save(input)
-    try:
-        hide_message(input, output, message, password)
-        if not os.path.exists(output): #Si no se genera la imágen/no está en la ruta
-            return "No se genero la imágen"
-    except Exception as e:
-        print("ERROR REAL:", e)
-        return f"Error al ocultar el mensaje: {str(e)}" #Salimos del programa si hay un error en la lógica en si, no en los archivos
 
-    #Esto se ejecutara justo después de retornar la imágen al usuario, en este caso lo utilizaremos para borrar los archivos de las imagenes justo después de devovolverselas al usuario para que no se guarden en el servidor de render/equipo
-    @after_this_request
-    def remove_files(response):
+    #CREAMOS EL ESTADO DE LA TAREA PARA PODER CONSULTAR SU PROGRESO DESDE EL FRONTEND
+    tasks[unique_id] = {"status": "processing"}
+
+    #DEFINIMOS LA FUNCION QUE SE EJECUTARA EN SEGUNDO PLANO PARA EVITAR BLOQUEAR EL SERVIDOR
+    def background_task():
+        try:
+            hide_message(input, output, message, password)
+
+            #Verificamos que la imagen se generó correctamente
+            if not os.path.exists(output): #Si no se genera la imágen/no está en la ruta
+                tasks[unique_id]["status"] = "error: No se genero la imagen"
+                return
+
+            #Marcamos la tarea como finalizada correctamente
+            tasks[unique_id]["status"] = "done"
+
+        except Exception as e:
+            print("ERROR REAL:", e)
+            tasks[unique_id]["status"] = f"error: {str(e)}"
+
+        #BORRAMOS LOS ARCHIVOS PARA NO LLENAR EL DISCO EN RENDER (SE HACE AL FINAL DEL PROCESO ASINCRONO)
         try:
             if os.path.exists(input):
                 os.remove(input)
 
-            if os.path.exists(output):
-                os.remove(output)
-
         except Exception as e:
-            print("Error borrando archivos:", e)
+            print("Error borrando archivo de entrada:", e)
 
-        return response
+    #LANZAMOS EL HILO EN SEGUNDO PLANO PARA QUE LA PETICION HTTP NO ESPERE
+    threading.Thread(target=background_task).start()
 
-    return send_file(output, as_attachment=True)
+    #DEVOLVEMOS EL ID DE LA TAREA EN VEZ DEL ARCHIVO (AHORA EL FRONTEND LO GESTIONA)
+    return {"task_id": unique_id}
 
 #Esta es la función que se encargara de calcular la capacidad mágica de la imágen, para poder mostrarselo al usuario y para tener las métricas de errores
 @app.route("/lengthofmessage", methods=["POST"])
@@ -123,6 +138,25 @@ def extraer():
 
     return render_template("escondinator.html", mensaje_extraido=message)
 
+#Aquí comprobamos el estado del task devolviendo su id para nuestro javascript
+@app.route("/status/<task_id>")
+def status(task_id):
+
+    if task_id not in tasks: #Si no hay task, entonces tampoco hay id de la task GAHOOK
+        return jsonify({"status": "not_found"})
+
+    return tasks[task_id]
+
+#La ruta que de la app que utiliza JS para descargar el archivp
+@app.route("/download/<task_id>")
+def download(task_id):
+
+    path = os.path.join(UPLOAD_FOLDER, f"{task_id}_hidden.png")
+
+    if os.path.exists(path): #Si el archivo se genero correctamente en /hide
+        return send_file(path, as_attachment=True)
+
+    return jsonify("Archivo no listo") #Esto si no se genero o todavia no hay archivo
 
 #Comprueba si el archivo se ejecuta directamente
 if __name__ == "__main__": 
