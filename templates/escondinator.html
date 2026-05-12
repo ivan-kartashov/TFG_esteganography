@@ -10,27 +10,38 @@
     </head>
 
     <body>
+
         <header>
             <a href="/">Main</a>
             <a href="#">blank</a>
         </header>
         <h1>ESCONDINATOR</h1>
-        <hr>
-        <h2>Ocultar mensaje</h2>
+        <div class="main-container layout">
+            <div class="side hide-side">
+            <h2>Ocultar mensaje</h2>
             <form action="/hide" method="post" enctype="multipart/form-data" id="hideForm" > <!--Para sebas, en action indicira que ruta de aplicación llamamos, acción que será post ya que el usuario envia la imágen, mensaje y contraseña hacia nuestra aplicación y luego el enctype permite que el usuario envie imágenes-->
-                <input type="file" name="imagen" id="imagenInput" required :hover>
-                <img id="soonsus" src="">
-                <button type="button" onclick="quitarimgseleccionadahide()"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
+                <div class="display-wrapper" id="hidebox">
+                    <img id="soonsus" src="" class="preview-img">
+                </div>
+                <div class="input-group">
+                    <input type="file" name="imagen" id="imagenInput" required>
+                    <button type="button" class="btn-clear" onclick="quitarimgseleccionadahide()">
+                        <img src="static/assets/images/pictograma-x_764382-13928.png" alt="Eliminar">
+                    </button>
+                </div>                
                 <p id="TextCapacity"></p> <!--En este caso le pasaremos al usuario la variable max_chars desde el JS-->
                 <textarea name="mensaje" id="mensajeInput" placeholder="Mensaje, no meta más de 100k carácteres ya que podria cargar los recursos del servidor, si necesita meter más utilice la opción de archivo"></textarea>
                 <p id="TextRemaining"></p> <!--La cantidad de texto restante de texto disponible-->
                 <p id="TextWritten"></p> <!--Cantidad de carácteres escritos-->
-                <input type="file" name="file_message" accept=".txt" id="messagefile"> <!--Aquí le permitiremos al usuario introducir archivos .txt-->
-                <button type="button" onclick="quitararchivoinput()"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
-                <p>El servidor podria fallar si se usan muchos carácteres, no introduzca mas de 100K carácteres a mano y menos de 4 millones de carácteres con archivos.</p>
+                <div class="input-group">
+                    <input type="file" name="file_message" accept=".txt" id="messagefile"> <!--Aquí le permitiremos al usuario introducir archivos .txt-->
+                    <button type="button" onclick="quitararchivoinput()" class="btn-clear"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
+                </div>
                 <h3>Introduce la Contraseña aqui:</h3>
-                <input id="passwordEncode" type="password" name="password" placeholder="Contraseña (Opcional)" maxlength="250">
-                <button type="submit">Ocultar</button>
+                <div class="sub extract-sub">
+                    <input id="passwordEncode" type="password" name="password" placeholder="Contraseña (Opcional)" maxlength="250">
+                    <button type="submit">Ocultar</button>
+                </div>
                 <p id="processingUnit"></p>
             </form>
 
@@ -38,29 +49,37 @@
             <h3>Hide Error:</h3>
             <p>{{ hide_error }}</p>
             {% endif %}
-
-        <hr>
-        <h2>Extraer mensaje</h2>
+            </div>
+        
+            <div class="side extract-side">
+            <h2>Extraer mensaje</h2>
             <form action="/extract" method="post" enctype="multipart/form-data">
-                <input type="file" name="imagen" required id="imagenInputExt">
-                <img id="toextract" src="">
-                <button type="button" onclick="quitarimgseleccionadaextract()"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
+                <div class="display-wrapper" id="extractbox">
+                    <img id="toextract" src="" class="preview-img">
+                </div>
+                <div class="input-group">
+                    <input type="file" name="imagen" required id="imagenInputExt">
+                    <button type="button" onclick="quitarimgseleccionadaextract()" class="btn-clear"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
+                </div>
                 <p></p>
                 <h3>Introduce la Contraseña aqui:</h3>
-                <input type="password" name="password" placeholder="Contraseña (Si tiene)">
-                <button type="submit">Extraer</button>
+                <div class="sub extract-sub">
+                    <input type="password" name="password" placeholder="Contraseña (Si tiene)">
+                    <button type="submit">Extraer</button>
+                </div>
             </form>
 
 
-            {% if mensaje_extraido %} 
+
+            </div>
+        </div>
+        {% if mensaje_extraido %} 
             <h3 class="extracted_message">Mensaje Extraido:</h3> <!--Aquí se utiliza Jinja2 para pasarle la variable al html SOLAMENTE si esta no esta vacia, o sea, si el mensaje se ha extraido de verdad-->
             <p class="extracted_message">{{ mensaje_extraido }}</p>
-            {% endif %}
-
+        {% endif %}
         <footer>
 
         </footer>
-
     </body>
 
     <script src="/static/JS/JS_messageinfo.js">

@@ -1,5 +1,6 @@
-// Estas serán las variables donde guardaremos los valores de los campos html por su id en el documento .html
+// Estas serán las variables donde guardaremos los valores de los campos html por su id en el documento .html, además podremos usar query para elegir varios elementos de una clase
 const imagenInput = document.getElementById("imagenInput");
+const imagenInputExt = document.getElementById("imagenInputExt")
 const mensajeArea = document.getElementById("mensajeInput");
 const textCapacity = document.getElementById("TextCapacity");
 const textRemaining = document.getElementById("TextRemaining");
@@ -7,7 +8,11 @@ const textWritten = document.getElementById("TextWritten");
 const scripthideForm = document.getElementById("hideForm");
 const password = document.getElementById("passwordEncode");
 const previewHide = document.getElementById("soonsus");
-const previewExtract = document.getElementById("toextra/ct");
+const previewExtract = document.getElementById("toextract");
+const textarea = document.querySelector("textarea");
+const fileInput = document.getElementById("messagefile");
+const hideBox = document.getElementById("hidebox");
+const extractBox = document.getElementById("extractbox");
 
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
@@ -17,6 +22,19 @@ password.addEventListener("input", () => {
     if (password.value.length > 250) {
         alert("Máximo 250 caracteres");
         password.value = password.value.slice(0, 250);
+    }
+});
+
+
+//Miramos si se metio algún archivo para calcular la cantidad de caracteres
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length > 0) { //Si no hay ningún archivo o se quita
+    textarea.disabled = true;
+    textWritten.innerText = null;
+    textRemaining.innerText = null;
+  } else { //
+    textarea.disabled = false;
+    updateCharCounter(); 
     }
 });
 
@@ -39,12 +57,43 @@ imagenInput.addEventListener("change", function() {
         
         // Esto para actualizar el contador que viene siguiente
         updateCharCounter();
+        updatedisplay(this, previewHide, hideBox);
     })
     .catch(error => console.error("Error:", error));//Control de errores de consola, donde error es el error completo, los errores de JavaScript deberian salir en la terminal al hacer f11 en la web y mirarlo
 });
 
+imagenInputExt.addEventListener("change", function() {
+    // Simplemente mostramos la previsualización
+    updatedisplay(this, previewExtract, extractBox);
+});
+
 //Esto es lo que "escucha" a que el usuario ponga input
 mensajeArea.addEventListener("input", updateCharCounter);
+
+/**
+ * Nuestro area de funciones estara aqui (funciones fuera de los buttons)
+ */
+
+//Esta es la función que actualizara el código de display
+function updatedisplay(input, previewElement, previewBox) {
+    const archivo = input.files[0];
+
+    
+    if (!archivo) { // Si no hay archivo, ocultamos el preview
+        previewElement.style.display = "none";
+        previewElement.src = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        previewElement.src = e.target.result;
+        previewBox.style.display="flex";
+    };
+
+    reader.readAsDataURL(archivo);
+}
 
 //Esta es la función para actualizar la cantidad de carácteres restantes cada vez que el usuario 
 function updateCharCounter() {
@@ -112,6 +161,11 @@ scripthideForm.addEventListener("submit", function (outcome) {
     });
 });
 
+/**
+ * Esta es la parte donde definiremos las funciones de los diferentes buttons
+ * como por ejemplo quitar seleccion de imagen y archivo
+ */
+
 //esta es la funcion que actua cuando se quita la imagen en el botón de quitado del html
 function quitarimgseleccionadahide() {
     document.getElementById("imagenInput").value = "";
@@ -121,6 +175,7 @@ function quitarimgseleccionadahide() {
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
     textWritten.innerText = null;
+    previewHide.src = "";
 }
 
 function quitarimgseleccionadaextract() {
@@ -130,6 +185,7 @@ function quitarimgseleccionadaextract() {
     textRemaining.style.color = "black";
     mensajeArea.maxLength = null;
     mensajeArea.value = null;
+    previewExtract.src = "";
     //Aqui recorremos cada elemento de la clase para quitar el contenido del extracted message flabadazabalright
     const elementos = document.getElementsByClassName("extracted_message");
     for (let i = 0; i < elementos.length; i++) {
@@ -137,16 +193,13 @@ function quitarimgseleccionadaextract() {
     }
 }
 
-//Código para detectar si el usuario escribe en el campo de mensaje o si elige el metodo del archivo
-const textarea = document.querySelector("textarea");
-const fileInput = document.getElementById("messagefile");
 //Escuchamos los cambios de si es archivo o texto, y dependiendo de lo que sea le desactivamos el textarea o lo dejamos activo
 fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) {
+    if (fileInput.files.length > 0) {
     textarea.disabled = true;
-  } else {
+    } else {
     textarea.disabled = false;
-  }
+    }
 });
 
 function quitararchivoinput() {
@@ -158,15 +211,3 @@ function quitararchivoinput() {
     mensajeArea.value = null;
     textarea.disabled = false;
 }
-
-//Miramos si se metio algún archivo para calcular la cantidad de caracteres
-fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) { //Si no hay ningún archivo o se quita
-    textarea.disabled = true;
-    textWritten.innerText = null;
-    textRemaining.innerText = null;
-  } else { //
-    textarea.disabled = false;
-    updateCharCounter(); 
-  }
-});
