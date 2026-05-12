@@ -42,7 +42,7 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     except:
         return "Imágen no válida"
-    pixels = img.load() #Esta si que es la linea que ahora sacara los datos de la imagen como los metadatos para que ahora trabajemos utilizandolos
+    data = list(img.getdata()) #Esta si que es la linea que ahora sacara los datos de la imagen como los metadatos para que ahora trabajemos utilizandolos
 
     #Ahora comprimimos el mensaje proporcionado por el usuario para máximizar la cantidad de carácteres permisibles
     compressed_message = zlib.compress(non_sus_message.encode(), level=1)
@@ -88,9 +88,20 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
             x = pixel_index % width
             y = pixel_index // width
 
-            rgb = list(pixels[x, y]) #Posiciones de píxeles
+            rgb = list(pixel_index[x, y]) #Posiciones de píxeles
             rgb[c] = (rgb[c] & ~1) | bit #Aquí se quita el bit menos significativo de cada canal rgb y se sustituye por el bit que necesitemos
-            pixels[x, y] = tuple(rgb)
+            pixel_index[x, y] = tuple(rgb)
+            
+            red, green, blue = pixel_index[x, y] #Posicionamos el píxel que vamos a cambiar
+
+            #Este if selecciona el canal, si el canal es 0 (primer canal) se seleccioanra el canal rojo, si es 2 seleccionaremos el verde y si no es ninguno de los dos que es azul.
+            if c == 0:
+                red = (red & ~1) | int(bit) #Quitamos el bit menos significativo (LSB) y proseguimos a insertar un bit (La | es un AND)
+            elif c == 1:
+                green = (green & ~1) | int(bit)
+            else:
+                blue = (blue & ~1) | int(bit)
+            pixel_index[x, y] = (red, green, blue) #Guardamos el píxel modificado, sumamos el indice y procedemos a reiterar otro píxel nuevo
 
             bit_index += 1
 
@@ -100,10 +111,15 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
         pixel_index = idx // 3
         c = idx % 3
         x = pixel_index % width
-        y = pixel_index // width
-        rgb = list(pixels[x, y]) 
-        rgb[c] = (rgb[c] & ~1) | int(bit) 
-        pixels[x, y] = tuple(rgb)
+        y = pixel_index // width  
+        red, green, blue = pixel_index[x, y] 
+        if c == 0:
+            red = (red & ~1) | int(bit) 
+        elif c == 1:
+            green = (green & ~1) | int(bit)
+        else:
+            blue = (blue & ~1) | int(bit)
+        pixel_index[x, y] = (red, green, blue) 
         bit_index += 1
 
     img.save(img_sus) #Guardamos la imágen con información escondida

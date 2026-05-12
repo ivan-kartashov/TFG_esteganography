@@ -148,3 +148,5 @@ pero entonces tendriamos que mirarlo.
 - La nueva estructura es así: Se crea la tarea --> se guarda la tarea con su id --> se descarga la imagen (esto permite que la web no se cierre automaticamente al procesar durante largos periodos de tiempo).
 
 - Además la nueva estructura usa AUN MÁS javascript así que pido que todos reviseis el codigo para entenderlo, además tenemos el jsonify para que los errores devueltos se capten correctamente en el js sin ser captados como errores de consola rarisimos.
+
+- Añadí un limite de caracteres a la contraseña.
