@@ -13,7 +13,7 @@ tasks = {} #Son las "tareas" del background, esto nos ayuda implementar un siste
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
-app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
+app.config["MAX_CONTENT_LENGTH"] = 350 * 1024 * 1024 #Aquí limitaremos el tamaño de subida a 50 MB, Podriamos cambiarlo a 25 o 15 dependiendo de como nos ira
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")#Dice el nombre de la carpeta en la que se guadaran las imagenes y asegura que esta esté
 os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al SO, si ya esta deberá seguir con el código sin dar errores
 
