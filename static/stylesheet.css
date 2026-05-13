@@ -1,6 +1,6 @@
 body {
     font-family: Arial;
-    width: 100%;
+    width:100%;
     margin: auto;
     grid-area: auto;
 }
@@ -47,8 +47,6 @@ footer {
 }
 
 .display-wrapper {
-    display: none;
-    margin-top: 10px;
     width: fit-content;
     height: fit-content;
     border-radius: 12px;
@@ -64,8 +62,6 @@ footer {
 
 .layout {
     display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px;
     padding: 20px;
     min-height: 80vh;
     overflow: hidden;
@@ -73,9 +69,8 @@ footer {
 }
 
 .side {
-    padding: 20px;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 18px;
     display: flex;
     flex-direction: column;
     align-items: center; 
@@ -88,13 +83,13 @@ footer {
     }
 }
 
-
 form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     width: 100%;
     max-width: 400px;
+    align-items: center;
 }
 
 .preview-img {
@@ -110,18 +105,18 @@ form {
 }
 
 .btn-clear {
-    background-color: #ff4d4d; 
+    background-color: #ff4d4d;
     border: none;
     width: 30px;
     height: 30px;
-    border-radius: 50%; 
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     flex-shrink: 0; 
     transition: background 0.2s;
-    padding: 0; 
+    padding: 0;
 }
 
 .btn-clear:hover {
@@ -129,7 +124,7 @@ form {
 }
 
 .btn-clear img {
-    width: 14px;  
+    width: 14px;
     height: 14px;
     border-radius: 50%;
 }
@@ -137,14 +132,7 @@ form {
 .side {
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     padding: 30px;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    width: 100%;
-    gap: 20px;
+    border: 5px solid black;
 }

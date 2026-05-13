@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/static/stylesheet.css">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Esteganografía</title>
+        <link rel="icon" type="image/jpeg" href="/static/assets/favicons/placeholder.jpg"/>
+    </head>
+
+    <body>
+
+        <header>
+            <a href="/escondinator"><b>Escondinator:Ocultar</b></a>
+            <a href="/revelar"><b>Escondinator:Extraer</b></a>
+        </header>
+        <h1>ESCONDINATOR</h1>
+        <div class="main-container layout">  
+            <div class="side extract-side">
+            <h2>Extraer mensaje</h2>
+            <form action="/extract" method="post" enctype="multipart/form-data">
+                <div class="display-wrapper" id="extractbox">
+                    <img id="toextract" src="" class="preview-img">
+                </div>
+                <div class="input-group">
+                    <input type="file" name="imagen" required id="imagenInputExt">
+                    <button type="button" onclick="quitarimgseleccionadaextract()" class="btn-clear"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
+                </div>
+                <p></p>
+                <h3>Introduce la Contraseña aqui:</h3>
+                <div class="sub extract-sub">
+                    <input type="password" name="password" placeholder="Contraseña (Si tiene)">
+                    <button type="submit">Extraer</button>
+                </div>
+            </form>
+
+            </div>
+        </div>
+        {% if mensaje_extraido %} 
+            <h3 class="extracted_message">Mensaje Extraido:</h3> <!--Aquí se utiliza Jinja2 para pasarle la variable al html SOLAMENTE si esta no esta vacia, o sea, si el mensaje se ha extraido de verdad-->
+            <p class="extracted_message">{{ mensaje_extraido }}</p>
+        {% endif %}
+        <footer>
+
+        </footer>
+    </body>
+
+    <script src="/static/JS/JS_messageinfo.js">
+
+    </script>
+    
+</html>

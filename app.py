@@ -29,6 +29,11 @@ def index():
 def escondinator():
     return render_template("escondinator.html")
 
+#
+@app.route("/revelar")
+def revelar():
+    return render_template("revelar.html")
+#
 
 @app.route("/hide", methods=["POST"]) #Define una dirección nueva "/hide"
 def hide():
