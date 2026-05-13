@@ -57,8 +57,8 @@ def hide_message(soon_to_be_sus_img, img_sus, non_sus_message, user_password):
 
     #Esta linea calcula el tamaño de la imágen y luego calcula el total de las posiciones totales
     width, height = img.size
-    total_positions = width * height * 3
-    total_bits = (len(mensaje_cifrado) * 8) + len(marker)
+    total_positions = width * height * 3 # La razon por la que es 3 es para que lea los tres canales que siempre estan presentes y que no lea el canal alfa, que eso puede dar errores si no esta presente.
+    total_bits = (len(mensaje_cifrado) * 8) + len(marker) # Sin el Marker el programa no sabra cuando termina el mensaje y puede provocar la aparicion de caracteres extraños al final
 
     #Aqui hacemos un raise si el mensaje del usuario es demasiado grande
     if total_bits > total_positions:
