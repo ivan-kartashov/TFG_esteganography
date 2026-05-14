@@ -156,3 +156,11 @@ pero entonces tendriamos que mirarlo.
 - Arreglados varios cambios que producian errores en js, python y la lógica en si.
 
 - Añadida la previsualización de las imágenes y reorganizado el docuemento JS.
+
+14/05/2026
+
+- Metido el enlace a main de nuevo y poco más.
+
+- Cambiado algunos head's de html para meterles nombres distintos.
+
+- 
