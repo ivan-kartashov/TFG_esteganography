@@ -169,4 +169,4 @@ pero entonces tendriamos que mirarlo.
 
 - Implementadas las imágenes diseñadas por Sebastian en las páginas, convertidas en .svg para mejorar el rendimiento.
 
-- Añadido el favicon diseñado por Sebastian en la página, además de formatear el header.
+- Añadido el favicon diseñado por Sebastian en la página, además de formatear el header para que sea más atractivo.
