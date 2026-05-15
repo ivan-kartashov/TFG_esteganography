@@ -163,4 +163,6 @@ pero entonces tendriamos que mirarlo.
 
 - Cambiado algunos head's de html para meterles nombres distintos.
 
-- 
+15/05/2026
+
+- Cambiado para que hayan dos enlaces de la app devolviendo main.html para que se aceda mejor en development.

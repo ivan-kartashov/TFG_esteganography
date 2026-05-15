@@ -20,6 +20,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al
 
 
 #Esto hara que main.html se muestre como página principal si el usuario busca localhost:5000/ en su navegador
+@app.route("/")
 @app.route("/main")
 def index():
     return render_template("main.html") #La carpeta templates es estrictamente llamada así para que esto funcione correctamente
