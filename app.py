@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, jsonify, after_this_request #flask es el que se encargara de levantar la web, render_template permite 
+from flask import Flask, render_template, request, send_file, jsonify, after_this_request, redirect #flask es el que se encargara de levantar la web, render_template permite 
 #cargarar archivos html, request nos permitira que el usuario interactue con el codigo a través de la interfaz y send_file permite que 
 #el codigo le envie datos descargables al usuario
 #Además, gracias a after_this_request podremos borrar los archivos creados en el servidor despúes de ejecutar todo el codigo necesario del usuario
@@ -9,7 +9,7 @@ from stego import hide_message, extract_message, allowed_file
 from werkzeug.utils import secure_filename #Asegura que los nombres de las imagenes no sean problematicos
 from PIL import Image
 
-tasks = {} #Son las "tareas" del background, esto nos ayuda implementar un sistema asíncrona en el sistema para permitir que la web no cuelgue en render
+tasks = {} #Son las "tareas" del background, esto nos ayuda implementar un sistema asíncrona en el sistema para permitir que la web no cuelgue en render (threading)
 
 app = Flask(__name__) #Crea una nueva instancia en el "servidor" flask
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") #Esto permitira mejorar la seguridad del sitio
@@ -20,10 +20,15 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True) #Le obliga crear la carpeta uploads al
 
 
 #Esto hara que main.html se muestre como página principal si el usuario busca localhost:5000/ en su navegador
-@app.route("/")
+
 @app.route("/main")
 def index():
     return render_template("main.html") #La carpeta templates es estrictamente llamada así para que esto funcione correctamente
+
+#Esta ruta es por si acaso para que el render no lo vea como duplicado por casualidad
+@app.route("/")
+def oldindex():
+    return redirect("/main")
 
 #Esto hara que se pueda acceder a está funcionalidad de la app con el enlace /escondinator
 @app.route("/escondinator")
