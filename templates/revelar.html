@@ -6,17 +6,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Esteganografía</title>
-        <link rel="icon" type="image/jpeg" href="/static/assets/favicons/placeholder.jpg"/>
+        <link rel="icon" type="image/jpeg" href="/static/assets/favicons/infosentryfav.svg">
     </head>
 
     <body>
 
         <header>
-            <a href="/main">Home</a>
+            <a href="/main"><img src="/static/assets/favicons/infosentryfav.svg" alt="Home" id="companylogoheader"></a>
             <a href="/escondinator">Escondinator:Ocultar</a>
             <a href="/revelar">Escondinator:Extraer</a>
         </header>
-        <h1>ESCONDINATOR</h1>
         <div class="main-container layout">  
             <div class="side extract-side">
             <h2>Extraer mensaje</h2>
@@ -26,13 +25,15 @@
                 </div>
                 <div class="input-group">
                     <input type="file" name="imagen" required id="imagenInputExt">
-                    <button type="button" onclick="quitarimgseleccionadaextract()" class="btn-clear"><img src="static\assets\images\pictograma-x_764382-13928.png" alt="" width="15" height="15"></button>                
+                    <button type="button" onclick="quitarimgseleccionadaextract()" class="btn-clear"><img src="static\assets\images\pictograma-x_764382-13928.svg" alt="" width="15" height="15"></button>                
                 </div>
                 <p></p>
                 <h3>Introduce la Contraseña aqui:</h3>
                 <div class="sub extract-sub">
                     <input type="password" name="password" placeholder="Contraseña (Si tiene)">
-                    <button type="submit">Extraer</button>
+                    <button type="submit">
+                        <img src="/static/assets/images/extbuttonimg.svg" alt="Extraer Mensaje" class="button-image">
+                    </button>
                 </div>
             </form>
 

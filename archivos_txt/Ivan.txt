@@ -166,3 +166,7 @@ pero entonces tendriamos que mirarlo.
 15/05/2026
 
 - Cambiado para que hayan dos enlaces de la app devolviendo main.html para que se aceda mejor en development.
+
+- Implementadas las imágenes diseñadas por Sebastian en las páginas, convertidas en .svg para mejorar el rendimiento.
+
+- Añadido el favicon diseñado por Sebastian en la página, además de formatear el header.
