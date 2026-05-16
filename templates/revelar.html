@@ -39,10 +39,12 @@
 
             </div>
         </div>
-        {% if mensaje_extraido %} 
-            <h3 class="extracted_message">Mensaje Extraido:</h3> <!--Aquí se utiliza Jinja2 para pasarle la variable al html SOLAMENTE si esta no esta vacia, o sea, si el mensaje se ha extraido de verdad-->
-            <p class="extracted_message">{{ mensaje_extraido }}</p>
-        {% endif %}
+        <div id="extracted-box">
+            {% if mensaje_extraido %} 
+                <h3 class="extracted_message">Mensaje Extraido:</h3> <!--Aquí se utiliza Jinja2 para pasarle la variable al html SOLAMENTE si esta no esta vacia, o sea, si el mensaje se ha extraido de verdad-->
+                <p class="extracted_message">{{ mensaje_extraido }}</p>
+            {% endif %}
+        </div>
         <footer>
             <p>InfoSentry (al menos en esté caso) es una empresa ficticia, cualquier coincidencia en la titulación de esta empresa no es intencional</p>
         </footer>

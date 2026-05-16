@@ -174,3 +174,7 @@ pero entonces tendriamos que mirarlo.
 16/05/2026
 
 - Arreglado el problema del threading que causaba que solo se devolviera la id del proceso, el JS se habria desconectado del html después de la separación en los formularios, por lo cual tuve que meter un if protector a todos los event listeners, para que javascript no empezara a tener un ictus en mitad de la ejecución.
+
+- Metido una propiedad css en el mensaje extraido para que haya un limite de carácteres y que pase de línea el texto extraido automáticamente.
+
+- Además añadido texto de explicación en botones de elegir.

@@ -28,11 +28,13 @@
                     <button type="button" class="btn-clear" onclick="quitarimgseleccionadahide()">
                         <img src="static/assets/images/pictograma-x_764382-13928.svg" alt="Eliminar">
                     </button>
-                </div>                
+                </div>            
+                <p>Introducir a mano (<100k)</p>
                 <p id="TextCapacity"></p> <!--En este caso le pasaremos al usuario la variable max_chars desde el JS-->
                 <textarea name="mensaje" id="mensajeInput" placeholder="Mensaje, no meta más de 100k carácteres ya que podria cargar los recursos del servidor, si necesita meter más utilice la opción de archivo"></textarea>
                 <p id="TextRemaining"></p> <!--La cantidad de texto restante de texto disponible-->
                 <p id="TextWritten"></p> <!--Cantidad de carácteres escritos-->
+                <p>Archivo de texto:</p>
                 <div class="input-group">
                     <input type="file" name="file_message" accept=".txt" id="messagefile"> <!--Aquí le permitiremos al usuario introducir archivos .txt-->
                     <button type="button" onclick="quitararchivoinput()" class="btn-clear"><img src="static\assets\images\pictograma-x_764382-13928.svg" alt="" width="15" height="15"></button>                
