@@ -170,3 +170,7 @@ pero entonces tendriamos que mirarlo.
 - Implementadas las imágenes diseñadas por Sebastian en las páginas, convertidas en .svg para mejorar el rendimiento.
 
 - Añadido el favicon diseñado por Sebastian en la página, además de formatear el header para que sea más atractivo.
+
+16/05/2026
+
+- Arreglado el problema del threading que causaba que solo se devolviera la id del proceso, el JS se habria desconectado del html después de la separación en los formularios, por lo cual tuve que meter un if protector a todos los event listeners, para que javascript no empezara a tener un ictus en mitad de la ejecución.

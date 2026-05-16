@@ -17,58 +17,67 @@ const extractBox = document.getElementById("extractbox");
 // Esta es la variable que traemos de app.py
 let maxChars = 0;
 
-//Comprobaremos que la contraseña no sea mayor que 250 carácteres
-password.addEventListener("input", () => {
-    if (password.value.length > 250) {
-        alert("Máximo 250 caracteres");
-        password.value = password.value.slice(0, 250);
-    }
-});
-
+//Este if se asegurara que haya el campo que queremos rastrear antes de intentar rastrearlo para que no hayan errores durante la ejecución de formularios en páginas diferentes
+if (password) {
+    password.addEventListener("input", () => { //Comprobaremos que la contraseña no sea mayor que 250 carácteres
+        if (password.value.length > 250) {
+            alert("Máximo 250 caracteres");
+            password.value = password.value.slice(0, 250);
+        }
+    });
+}
 
 //Miramos si se metio algún archivo para calcular la cantidad de caracteres
-fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) { //Si no hay ningún archivo o se quita
-    textarea.disabled = true;
-    textWritten.innerText = null;
-    textRemaining.innerText = null;
-  } else { //
-    textarea.disabled = false;
-    updateCharCounter(); 
-    }
-});
+if (fileInput) { 
+    fileInput.addEventListener("change", () => {
+    if (fileInput.files.length > 0) { //Si no hay ningún archivo o se quita
+        textarea.disabled = true;
+        textWritten.innerText = null;
+        textRemaining.innerText = null;
+    } else { //
+        textarea.disabled = false;
+        updateCharCounter(); 
+        }
+    });
+}
 
 //Aquí apuntamos lo que sucede cuando cambiamos/ponemos imágen
-imagenInput.addEventListener("change", function() {
-    const file = this.files[0];
-    const formData = new FormData();
-    formData.append("imagen", file); //Aquí el código pilla la imágen introducida por el usuario
+if (imagenInput) {
+    imagenInput.addEventListener("change", function() {
+        const file = this.files[0];
+        const formData = new FormData();
+        formData.append("imagen", file); //Aquí el código pilla la imágen introducida por el usuario
 
-    fetch("/lengthofmessage", { //Aquí pilla la ruta /lengthofmessage del servidor flask para conseguir el valor del return en este caso
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        // Guardamos el numero de las posiciones disponibles totales y las mostramos, ademas de limitar el número de carácteres al usuario en el textarea
-        maxChars = parseInt(data); 
-        textCapacity.innerText = "Número máximo de carácteres: " + maxChars;
-        mensajeArea.maxLength = maxChars;
-        
-        // Esto para actualizar el contador que viene siguiente
-        updateCharCounter();
-        updatedisplay(this, previewHide, hideBox);
-    })
-    .catch(error => console.error("Error:", error));//Control de errores de consola, donde error es el error completo, los errores de JavaScript deberian salir en la terminal al hacer f11 en la web y mirarlo
-});
+        fetch("/lengthofmessage", { //Aquí pilla la ruta /lengthofmessage del servidor flask para conseguir el valor del return en este caso
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Guardamos el numero de las posiciones disponibles totales y las mostramos, ademas de limitar el número de carácteres al usuario en el textarea
+            maxChars = parseInt(data); 
+            textCapacity.innerText = "Número máximo de carácteres: " + maxChars;
+            mensajeArea.maxLength = maxChars;
+            
+            // Esto para actualizar el contador que viene siguiente
+            updateCharCounter();
+            updatedisplay(this, previewHide, hideBox);
+        })
+        .catch(error => console.error("Error:", error));//Control de errores de consola, donde error es el error completo, los errores de JavaScript deberian salir en la terminal al hacer f11 en la web y mirarlo
+    });
+}
 
-imagenInputExt.addEventListener("change", function() {
-    // Simplemente mostramos la previsualización
-    updatedisplay(this, previewExtract, extractBox);
-});
+if (imagenInputExt) { 
+    imagenInputExt.addEventListener("change", function() {
+        // Simplemente mostramos la previsualización
+        updatedisplay(this, previewExtract, extractBox);
+    });
+}
 
 //Esto es lo que "escucha" a que el usuario ponga input
-mensajeArea.addEventListener("input", updateCharCounter);
+if (mensajeArea) { 
+    mensajeArea.addEventListener("input", updateCharCounter);
+}
 
 /**
  * Nuestro area de funciones estara aqui (funciones fuera de los buttons)
@@ -119,48 +128,49 @@ function updateCharCounter() {
 }
 
 //Aqui esperamos que alguien haga submit al formulario de esconder información
-scripthideForm.addEventListener("submit", function (outcome) {
-    outcome.preventDefault(); //Esto evita que se envie de la manera predeterminada
+if (scripthideForm) { 
+    scripthideForm.addEventListener("submit", function (outcome) {
+        outcome.preventDefault(); //Esto evita que se envie de la manera predeterminada
 
-    const formData = new FormData(scripthideForm);
+        const formData = new FormData(scripthideForm);
 
-    fetch("/hide", {
-        method: "POST",
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
+        fetch("/hide", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
 
-        const taskId = data.task_id;
+            const taskId = data.task_id;
 
-        //Indicamos al usuario que la imágen se está procesando está procesando
-        document.getElementById("processingUnit").innerText = "Escondiendo información... Buscando insectos... Buscando em... pues buscando... emmm...";
+            //Indicamos al usuario que la imágen se está procesando está procesando
+            document.getElementById("processingUnit").innerText = "Escondiendo información... Buscando insectos... Buscando em... pues buscando... emmm...";
 
-        //Polling (Que es como la intensidad de actualización, aqui es cada 2 segundos)
-        const updateinfo = setInterval(() => {
-            //Aquí busca el json con el proceso de segundo plano para mirar su estado y devolver respuesta dependiendo del estado
-            fetch(`/status/${taskId}`)
-            .then(res => res.json()) //Cuando la respuesta se reciba que lo convertiamos a json
-            .then(status => { //Esto ya es cuando los datos son json y podemos procesarlos correctamente
-                console.log("El estado del proceso es este ahora mismo:", status);
-                if (status.status === "done") { //Una vez se termine el proceso esto >>>
-                    clearInterval(updateinfo);
+            //Polling (Que es como la intensidad de actualización, aqui es cada 2 segundos)
+            const updateinfo = setInterval(() => {
+                //Aquí busca el json con el proceso de segundo plano para mirar su estado y devolver respuesta dependiendo del estado
+                fetch(`/status/${taskId}`)
+                .then(res => res.json()) //Cuando la respuesta se reciba que lo convertiamos a json
+                .then(status => { //Esto ya es cuando los datos son json y podemos procesarlos correctamente
+                    console.log("El estado del proceso es este ahora mismo:", status);
+                    if (status.status === "done") { //Una vez se termine el proceso esto >>>
+                        clearInterval(updateinfo);
 
-                    document.getElementById("processingUnit").innerText = "Imágen normal inconspiciosa preparada para la descarga inocente *guiño guiño*";
-                    
-                    //Aquí hacemos una descarga automática cuando el estado dice "done", utilizamos los datos del json que sacamos antes que se genera en app.py
-                    window.location.href = `/download/${taskId}`;
-                }
-                if (status.status.startsWith("error")) { //En caso de error mostramos esto
-                    clearInterval(updateinfo);
-                    alert("Critico: " + status.status);
-                    document.getElementById("processingUnit").innerText = "Aibaaaa errorrrrr";
-                }
-            });
-        }, 2000); //Esa es la intensidad de la actualización, en este caso son 2 segundos
+                        document.getElementById("processingUnit").innerText = "Imágen normal inconspiciosa preparada para la descarga inocente *guiño guiño*";
+                        
+                        //Aquí hacemos una descarga automática cuando el estado dice "done", utilizamos los datos del json que sacamos antes que se genera en app.py
+                        window.location.href = `/download/${taskId}`;
+                    }
+                    if (status.status.startsWith("error")) { //En caso de error mostramos esto
+                        clearInterval(updateinfo);
+                        alert("Critico: " + status.status);
+                        document.getElementById("processingUnit").innerText = "Aibaaaa errorrrrr";
+                    }
+                });
+            }, 2000); //Esa es la intensidad de la actualización, en este caso son 2 segundos
+        });
     });
-});
-
+}
 /**
  * Esta es la parte donde definiremos las funciones de los diferentes buttons
  * como por ejemplo quitar seleccion de imagen y archivo
@@ -194,13 +204,15 @@ function quitarimgseleccionadaextract() {
 }
 
 //Escuchamos los cambios de si es archivo o texto, y dependiendo de lo que sea le desactivamos el textarea o lo dejamos activo
-fileInput.addEventListener("change", () => {
-    if (fileInput.files.length > 0) {
-    textarea.disabled = true;
-    } else {
-    textarea.disabled = false;
-    }
-});
+if (fileInput) {
+    fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+        textarea.disabled = true;
+        } else {
+        textarea.disabled = false;
+        }
+    });
+}
 
 function quitararchivoinput() {
     document.getElementById("messagefile").value = "";
