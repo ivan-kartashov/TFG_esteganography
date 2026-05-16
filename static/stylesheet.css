@@ -3,6 +3,14 @@ body {
     width:100%;
     margin: auto;
     grid-area: auto;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+.extracted_message{
+    background-color: lightgreen;
+    width:min-content;
 }
 
 h1 {
